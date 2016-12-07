@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>永兴印刷订单生产管理系统-登录</title>
+<link href="css/dwz/login.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="css/easyui/easyui.css" />
+<link rel="stylesheet" type="text/css" href="css/easyui/icon.css" />
+<link rel="stylesheet" type="text/css" href="css/easyui/demo.css" />
+<script type="text/javascript" src="js/easyui/jquery.min.js"></script>
+<script type="text/javascript" src="js/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="js/easyui/easyui-lang-zh_CN.js"></script>
+
+
+</head>
+
+<body>
+	<div id="login">
+		<div id="login_header">
+			<h1 class="login_logo">
+				<a href="#"><img src="img/dwz/login_logo.gif" /></a>
+			</h1>
+			<div class="login_headerContent">
+				<div class="navList">
+					<ul>
+						<li><a href="#">设为首页</a></li>
+						<!--
+						<li><a href="http://bbs.dwzjs.com">反馈</a></li>-->
+						<li><a href="#" target="_blank">添加收藏</a></li>
+						
+					</ul>
+				</div>
+				<h2 class="login_title"><img src="img/dwz/login_title.png" /></h2>
+			</div>
+		</div>
+		<div id="login_content">
+			<div class="loginForm">
+				<form id="loginform" action="index.html">
+					<p>
+						<label>用户名：</label>
+						<input type="text" id="username" name="username" size="20" class="login_input" />
+					</p>
+					<p>
+						<label>密码：</label>
+						<input type="password" id="password" name="password" size="20" class="login_input" />
+					</p>
+					<!--
+					<p>
+						<label>验证码：</label>
+						<input class="code" type="text" size="5" />
+						<span><img src="img/dwz/header_bg.png" alt="" width="75" height="24" /></span>
+					</p>
+					-->
+					<div class="login_bar">
+						<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">登陆</a>
+					</div>
+				</form>
+			</div>
+			<div class="login_banner"><img src="img/dwz/login_banner.jpg" /></div>
+
+		</div>
+		<script>
+			function submitForm(){
+				var  opertionUrl = "http://192.168.33.56:8080/YXYS/services/"
+				$.post(opertionUrl+"userinfo/checkUserPassword",{userName:$('#username').val(),passWord:$('#password').val()},loginSuccess,"text");
+			}
+			function loginSuccess(data){
+				if(data=='nouser'){
+					$.messager.alert("操作提示", "用户名不存在，请联系0318-8616070！","error");
+				}else if(data=="failpass"){
+					$.messager.alert("操作提示", "密码错误！","error");
+				}else{
+					location.href = "index.html?safecode="+data;
+				}
+			}
+		</script>
+		<div id="login_footer">
+			Copyright &copy; 2016 ChunFeng SoftWare Inc. All Rights Reserved.
+		</div>
+	</div>
+</body>
+</html>

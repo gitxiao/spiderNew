@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>永兴印刷订单生产管理系统-首页</title>
+	<link rel="stylesheet" type="text/css" href="../css/easyui/easyui.css" />
+	<link rel="stylesheet" type="text/css" href="../css/easyui/icon.css"/>
+	<link rel="stylesheet" type="text/css" href="../css/easyui/demo.css"/>
+	<link rel="stylesheet" type="text/css" href="../css/cf/table.css"/>
+	<script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="../js/easyui/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="../js/json2.js"></script>
+	
+	<script type="text/javascript" src="../js/myConstants.js"></script>
+	<script type="text/javascript" src="../js/myUtils.js"></script>
+	<script type="text/javascript" src="../js/myNames.js"></script>
+</head>
+<body>
+	
+		<table cellpadding="5">
+			<tr>
+				<td>订单编号:</td>
+				<td><input id="gcformNum" class="easyui-textbox" data-options="required:true" readonly="readonly" type="text" ></input></td>
+				<td>客户名称:</td>
+				<td><input id="gccustomer" class="easyui-combobox" data-options="valueField:'id',textField:'cusName'"></input></td>
+				<td>联系电话:</td>
+				<td><input id="gcphoneNum" missingMessage="请输入电话号码(格式:0318861000/13900006666)" class="easyui-numberbox" data-options="required:true" type="text" ></input></td>
+			</tr>
+			<tr>
+				<td>印刷品名称:</td>
+				<td><input id="gcproductName" missingMessage="印刷品名称为必输项" class="easyui-textbox" data-options="required:true" type="text"  ></input></td>
+				<td>纸张类型:</td>
+				<td>
+					<input id="gcpaperType" class="easyui-combobox" data-options="valueField:'dtype',textField:'mname',onSelect:loadGcPaperSize "></input>
+				</td>
+				<td>纸张规格:</td>
+				<td>
+					<input id="gcpaperSize" class="easyui-combobox" data-options="valueField:'id',textField:'msize' "></input>
+				</td>
+			</tr>
+			<tr>
+				<td>成品尺寸:</td>
+				<td>
+					<input id="gcproductSize" missingMessage="成品尺寸为数字必输项" class="easyui-numberbox" style="width:100px" data-options="required:true" type="text"  /> &nbsp;&nbsp;K
+				</td>
+				<td>页码数量:</td>
+				<td><input id="gcpagination"  missingMessage="页码数量为数字必输项" class="easyui-numberbox" data-options="required:true"  ></input></td>
+				<td>印刷工艺:</td>
+				<td>
+					<select id="gcprintType" class="easyui-combobox" name="印刷工艺" style="width:140px;">
+						<option value="1">覆膜</option>
+						<option value="2">UV</option>
+						<option value="3">压纹</option>
+						<option value="4">起鼓</option>
+						<option value="5">烫金</option>
+						<option value="6">烫银</option>
+						<option value="7">花线</option>
+						<option value="8">磨切</option>
+						<option value="9">压痕</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>装订方式:</td>
+				<td>
+					<select id="gcbindtype" class="easyui-combobox" name="装订方式" style="width:140px;">
+						<option value="1">线订</option>
+						<option value="2">胶订</option>
+						<option value="3">骑马订</option>
+						<option value="4">无缝装</option>
+					</select>
+				</td>
+				<td>成品数量:</td>
+				<td><input id="gcproductCount" missingMessage="成品数量为数字必输项" class="easyui-numberbox" data-options="required:true"  ></input></td>
+				<td>交货时间:</td>
+				<td><input id="gcendDate" class="easyui-datebox" ></input></td>
+			</tr>
+			<tr>
+				<td>设计师:</td>
+				<td>
+					<input id="gcdesigner" class="easyui-textbox" data-options="required:true" type="text" />
+				</td>
+				<td>出版地:</td>
+				<td>
+					<select id="gcprintFrom" class="easyui-combobox" name="出版地" style="width:140px;">
+						<option value="1">印刷学校</option>
+						<option value="2">飞腾</option>
+						<option value="3">衡武</option>
+					</select>
+				</td>
+				<td>内资备案号:</td>
+				<td>
+					<input id="gcbakCode" class="easyui-textbox" data-options="required:true" type="text" />
+				</td>
+			</tr>
+
+			<tr>
+				<td>小样备案号:</td>
+				<td>
+					<input id="gcdemoCode" class="easyui-textbox" data-options="required:true" type="text"  />
+				</td>
+				<td>订单价格：</td>
+				<td><input id="gcformPrice" class="easyui-numberbox"  missingMessage="订单价格为数字必输项"  data-options="required:true"  ></input></td>
+				<td>加工类型:</td>
+				<td>
+					<select id="gcmaketype" class="easyui-combobox" name="加工类型" data-options="onSelect:selectGcPtype" style="width:140px;">
+						<option value="1">自印</option>
+						<option value="2">外协</option>
+					</select>
+				</td>
+			</tr>
+			<tr id="gcouthelp" style="display:none">
+				<td>外协单位:</td>
+				<td colspan="2"><input id="partnerComb3" style="width: 140px" class="easyui-combobox" data-options="valueField:'id',textField:'partnerName'"></input></td>
+				<td></td>
+				<td>外协价格：</td>
+				<td ><input id="gcprintPrice" class="easyui-numberbox" missingMessage="外协价格为数字必输项" data-options="required:true" style="width:140px;"></input></td>
+			</tr>
+			<tr>
+				<td>备注</td>
+				<td colspan="5"> <input id="gcremark" style="width:600px;height: 100px;" class="easyui-textbox" type="text"  /> </td>
+			</tr>
+		</table>
+	
+</body>
+</html>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+    <class name="cn.muke.ssh.domain.T_News" table="T_News" schema="dbo" catalog="spider">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="url" column="url" length="200" type="java.lang.String"/>
+        <property name="title" column="title" length="50" type="java.lang.String"/>
+        <property name="keyword" column="keyword" length="50" type="java.lang.String"/>
+        <property name="pubDate" column="pubDate" length="20" type="java.util.Date"/>
+        <property name="depth" column="depth" type="java.lang.Integer"/>
+        
+    </class>
+</hibernate-mapping>

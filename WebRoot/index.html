@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>永兴印刷订单生产管理系统-首页</title>
+	<link rel="stylesheet" type="text/css" href="css/easyui/easyui.css" />
+	<link rel="stylesheet" type="text/css" href="css/easyui/icon.css" />
+	<link rel="stylesheet" type="text/css" href="css/easyui/demo.css" />
+	<script type="text/javascript" src="js/easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="js/easyui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/easyui/easyui-lang-zh_CN.js"></script>
+	<script>
+		$(function(){ getRole();})
+
+		var typeAdmin = 1;
+		var typeMd = 2;
+		var typeGc = 3;
+		var typeCjzr = 4;
+		var typeKg = 5;
+		var typeCz = 6;
+		var typeHt = 7;
+		
+
+		function getRole(){
+			var usertype = getUserType();
+			var username = getUserId();
+			usertype=typeAdmin;
+			if(usertype==typeMd){
+				$("#ddmid").css("display","");
+				window.content.location.href="form.html?userid="+username;
+				$("#czddmid").css("display","none");
+				$("#cwmid").css("display","none");
+				$("#tjmid").css("display","none");
+				$("#yclmid").css("display","none");
+				$("#cpmid").css("display","none");
+				$("#scmid").css("display","none");
+				$("#htmid").css("display","none");
+
+			}else if(usertype==typeCz || usertype == typeGc){
+				$("#ddmid").css("display","none");
+				$("#czddmid").css("display","");
+				window.content.location.href="mform.html?userid="+username;
+				$("#cwmid").css("display","");
+				$("#tjmid").css("display","");
+				$("#yclmid").css("display","none");
+				$("#cpmid").css("display","none");
+				$("#scmid").css("display","none");
+				$("#htmid").css("display","none");
+			}else if(usertype==typeCjzr){
+				$("#ddmid").css("display","none");
+				$("#czddmid").css("display","none");
+				$("#cwmid").css("display","none");
+				$("#tjmid").css("display","none");
+				$("#yclmid").css("display","none");
+				$("#cpmid").css("display","none");
+				$("#scmid").css("display","");
+				window.content.location.href="produce.html?userid="+username;
+				$("#htmid").css("display","none");
+			}else if(usertype==typeKg){
+				$("#ddmid").css("display","none");
+				$("#czddmid").css("display","none");
+				$("#cwmid").css("display","none");				
+				$("#tjmid").css("display","none");
+				$("#yclmid").css("display","");
+				window.content.location.href="product.html?userid="+username;
+				$("#cpmid").css("display","");
+				$("#scmid").css("display","none");
+				$("#htmid").css("display","none");
+			}else if(usertype==typeHt){
+				$("#ddmid").css("display","none");
+				$("#czddmid").css("display","none");
+				$("#cwmid").css("display","none");
+				$("#tjmid").css("display","none");
+				$("#yclmid").css("display","none");
+				$("#cpmid").css("display","none");
+				$("#scmid").css("display","none");
+				$("#htmid").css("display","");
+				window.content.location.href="manage.html?userid="+username;
+			}else if(usertype==typeAdmin){
+				$("#ddmid").css("display","");
+				window.content.location.href="form.html?userid="+username;
+				$("#czddmid").css("display","");
+				$("#cwmid").css("display","");
+				$("#tjmid").css("display","");
+				$("#yclmid").css("display","");
+				$("#cpmid").css("display","");
+				$("#scmid").css("display","");
+				$("#htmid").css("display","");
+				$("#cgmid").css("display","");
+			}else{
+				$("#ddmid").css("display","none");
+				$("#czddmid").css("display","none");
+				$("#cwmid").css("display","none");
+				$("#tjmid").css("display","none");
+				$("#yclmid").css("display","none");
+				$("#cpmid").css("display","none");
+				$("#scmid").css("display","none");
+				$("#htmid").css("display","none");
+			}
+		}
+
+
+
+		function getSafeCode(){
+	
+			var nurl = window.document.location.href;
+			var codeIndex = nurl.indexOf("safecode");
+			if(codeIndex==-1) return "false";
+			var keyValue = nurl.substring(codeIndex,nurl.length);
+			if(keyValue.indexOf("=")==-1) return false;
+			var values = keyValue.split("=");
+			if(values!=null&&values.length!=0){
+				return values[1];
+			}else{
+				return "false";
+			}
+		}
+		
+		function getUserType(){
+			var values = getSafeCode().split("|");
+			if(values!=null&&values.length!=0){
+				return values[0];
+			}else{
+				return "false";
+			}
+		}
+		function getUserId(){
+			var values = getSafeCode().split("|");
+			if(values!=null&&values.length!=0){
+				return values[1];
+			}else{
+				return "false";
+			}
+		}
+		function getRandom(){
+			var values = getSafeCode().split("|");
+			if(values!=null&&values.length!=0){
+				return values[2];
+			}else{
+				return "false";
+			}
+		}
+		
+		function dispatchUrl(urlStr){
+			content.location.href = urlStr+"?userid="+getUserId();
+		}
+	</script>
+</head>
+<body class="easyui-layout">
+
+
+	<div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:10px">
+		<h2>永兴印刷订单生产管理系统</h2>
+	</div>
+	<div data-options="region:'west',split:true,title:' '" style="width:270px;padding:10px;">
+	
+		<a id="ddmid" href="javascript:void(0)" onclick="dispatchUrl('form.html')" target="content" class="easyui-linkbutton" style="width:230px;height:30px;margin:10px;" >门店订单管理</a>
+		<a id="czddmid" href="javascript:void(0)" onclick="dispatchUrl('mform.html')" target="content" class="easyui-linkbutton" style="width:230px;height:30px;margin:10px;" >工厂订单管理</a>
+		<a id="cgmid" href="javascript:void(0)" onclick="dispatchUrl('buyform.html')" target="content" class="easyui-linkbutton" style="width:230px;height:30px;margin:10px;">采购管理</a>
+		<a id="scmid" href="javascript:void(0)" onclick="dispatchUrl('produce.html')" target="content" class="easyui-linkbutton" style="width:230px;height:30px;margin:10px;">生产管理</a>
+		<a id="yclmid" href="javascript:void(0)" onclick="dispatchUrl('materiel.html')" target="content" class="easyui-linkbutton" style="width:230px;height:30px;margin:10px;">原材料管理</a>
+		<a id="cpmid" href="javascript:void(0)" onclick="dispatchUrl('product.html')" target="content" class="easyui-linkbutton" style="width:230px;height:30px;margin:10px;">产品管理</a>
+		<a id="htmid" href="javascript:void(0)" onclick="dispatchUrl('manage.html')" target="content" class="easyui-linkbutton" style="width:230px;height:30px;margin:10px;">后台管理</a>
+		<a id="cwmid" href="javascript:void(0)" onclick="dispatchUrl('account.html')" target="content" class="easyui-linkbutton" style="width:230px;height:30px;margin:10px;">财务管理</a>
+		<a id="tjmid" href="javascript:void(0)" onclick="dispatchUrl('statistics.html')" target="content" class="easyui-linkbutton" style="width:230px;height:30px;margin:10px;">统计管理</a>
+	</div>
+	<div data-options="region:'center'">	
+		<iframe id="content" name="content" height="100%" style="width: 100%;height:100%; border: 0px;" scrolling="yes" src="" ></iframe>
+	</div>
+</body>
+</html>

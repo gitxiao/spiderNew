@@ -1,0 +1,25 @@
+#MyEclipse Hibernate Properties
+#Tue May 10 17:52:51 CST 2016
+sessionFactoryName=com.supermap.sppm.yxcms.HibernateSessionFactory
+genBasicCompId=true
+profile=
+daoSFId=
+version=3.3
+jndiPath=
+detectM2M=false
+reStrategyClass=
+detectO2O=false
+springDaoFile=
+useJavaTypes=true
+keyGenerator=
+libInstallFolder=WebRoot/WEB-INF/lib
+addLibs2Project=true
+genVersionTag=false
+sessionFactoryId=
+basePersistenceClass=com.supermap.sppm.yxcms.dao.BaseDao
+genAnnotations=false
+reSettingsFile=/spiderNew/hibernate.reveng.xml
+configFile=/spiderNew/src/hibernate.cfg.xml
+createConfigFile=true
+addLibs2Classpath=true
+baseDaoClass=BaseHibernateDAO

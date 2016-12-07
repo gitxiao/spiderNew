@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>永兴印刷订单生产管理系统-采购单</title>
+	<link rel="stylesheet" type="text/css" href="css/easyui/easyui.css" />
+	<link rel="stylesheet" type="text/css" href="css/easyui/icon.css" />
+	<link rel="stylesheet" type="text/css" href="css/easyui/demo.css" />
+	<link rel="stylesheet" type="text/css" href="css/cf/table.css" />
+	<script type="text/javascript" src="js/easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="js/easyui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/easyui/easyui-lang-zh_CN.js"></script>
+	
+	<script type="text/javascript" src="js/myConstants.js"></script>
+	<script type="text/javascript" src="js/myUtils.js"></script>
+	<script type="text/javascript" src="js/myNames.js"></script>
+	<script>
+		$(function(){
+			setBuyFormCode();
+			loadSupplier();
+			loadBuyPerson();
+			loadPaperType();
+			
+			//库存信息初始化
+			getCLData();		//先从材料类型表中拿出所有的材料类型数据
+			//采购单初始化
+			loadBuyForm();
+		});
+		
+		//加载库存信息
+		function fillClData(materialData){
+			$("#kcdg").datagrid({loadFilter:pagerFilter,loadMsg:'数据正在加载,请耐心的等待...',striped:true}).datagrid('loadData', materialData)
+		}
+		function getCLData(){
+			//从服务器获取材料数据
+			$.post(opertionUrl+"material/findAllMaterialType",fillClData,"json");
+		}
+		/******************************************************************************库存结束****************************************************/
+		function setBuyFormCode(){
+			$.post(opertionUrl+"buyform/nexBuyFormCode",loadBuyNextCodeSuccess,"text");
+		}
+		function loadBuyNextCodeSuccess(data){
+			$("#bformCode").html(data);
+		}
+		function selectMaterialType(){
+			var mtype = $("#materialType").combobox('getValue');
+			$.post(opertionUrl+"material/findMaterialType",{mtype:mtype},loadMaterialTypeSuccess,"json");
+			
+		}
+		function loadPaperType(){
+			$.post(opertionUrl+"material/findMaterialType",{mtype:1},loadMaterialTypeSuccess,"json");
+		}
+		function loadMaterialTypeSuccess(data){
+			
+			$("#materialName").combobox('loadData',data);
+			$("#materialName").combobox('unselect',$("#materialName").combobox("getValue"));
+			$("#materialSize").combobox('unselect',$("#materialSize").combobox("getValue"));
+			
+		}
+		function loadMaterialSize(){
+			var mtype = $("#materialType").combobox('getValue');
+			var val = $("#materialName").combobox('getValue');
+			$.post(opertionUrl+"material/findMaterialSize",{mtype:mtype,dtype:val},loadMatreialSizeSuccess,"json");
+		}
+		function loadMatreialSizeSuccess(data){
+			$("#materialSize").combobox('loadData',data);
+			$("#materialSize").combobox('unselect',$("#materialSize").combobox("getValue"));
+		}
+		function loadMaterialCount(){
+			var mid = $("#materialSize").combobox('getValue');
+			$.post(opertionUrl+"materialList/getMCountByMid",{mid:mid},loadMaterialCountSuccess,"json");
+		}
+		function loadMaterialCountSuccess(data){
+			$("#totalCount").html(data);
+		}
+		function loadSupplier(){
+			$.post(opertionUrl+"supplier/findAllSupplier",loadSupplierSuccess,"json");
+		}
+		function loadSupplierSuccess(data){
+			$("#supplierBox").combobox('loadData', data);
+		}
+		function loadBuyPerson(){
+			$.post(opertionUrl+"workerinfo/findWorkerByDuty",{para:6},loadBuyPersonSuccess,"json");
+		}
+		function loadBuyPersonSuccess(data){
+			$("#buyPerson").combobox('loadData', data);
+		}
+		function submitBuyForm(){
+			var para ='{"buyFormCode":"'+$("#bformCode").text()+'","mtype":'+$("#materialType").combobox('getValue')+',"mid":'+$("#materialSize").combobox("getValue")+
+				',"mcount":'+$("#buyCount").textbox("getValue")+',"supid":'+$("#supplierBox").combobox('getValue')+',"totalPrice":'+$("#formPrice").textbox("getValue")+
+				',"buyId":'+$("#buyPerson").combobox('getValue')+',"state":0}';
+			$.post(opertionUrl+"buyform/saveBuyForm",{para:para},saveBuyFormSuccess,"text");
+		}
+		function saveBuyFormSuccess(data){
+			if(data=='-2'){
+				$.messager.alert("操作提示","采购失败");
+			}else{
+				$.messager.alert("操作提示","采购成功");
+				clearCgForm();
+			}
+		}
+		function  clearCgForm(){
+			setBuyFormCode();
+			$("#materialType").combobox("unselect",$("#materialType").combobox("getValue"));
+			$("#materialName").combobox("unselect",$("#materialName").combobox("getValue"));
+			$("#materialSize").combobox("unselect",$("#materialSize").combobox("getValue"));
+			$("#supplierBox").combobox("unselect",$("#supplierBox").combobox("getValue"));
+			$("#buyPerson").combobox("unselect",$("#buyPerson").combobox("getValue"));
+			$("#totalCount").html("");
+			$("#buyCount").textbox("setValue","");
+			$("#formPrice").textbox("setValue","");
+		}
+		/************************************************采购单录入结束******************************************************/
+		function loadBuyForm(){
+			$.post(opertionUrl+"buyform/findAllDetailForm",loadAllDetailFormSuccess,"json");
+		}
+		function loadAllDetailFormSuccess(data){
+			$("#cgddg").datagrid({loadFilter:pagerFilter,loadMsg:'数据正在加载,请耐心的等待...',striped:true}).datagrid('loadData', data);
+		}
+	</script>
+</head>
+<body>
+	<div class="easyui-tabs" style="width:auto;height:auto;">
+		<div title="采购单录入" style="padding:10px">
+			<div style="padding:10px 60px 20px 60px">
+				<form id="miff" method="post">
+					<table class="tablecss" style="width:800px;">
+						<tr>
+							<th colspan="6" align="center">永兴印刷原材料采购单</th>
+						</tr>
+						<tr>
+							<td>采购单编号:</td>
+							<td id="bformCode"></td>
+							<td>材料类型:</td>
+							<td>
+								<select id="materialType" class="easyui-combobox" name="材料类型" data-options="onSelect:selectMaterialType" style="width:140px;">
+									<option value="1">纸张</option>
+									<option value="2">油墨</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>材料名称:</td>
+							<td><input id="materialName" class="easyui-combobox" style="width: 200px;" data-options="valueField:'dtype',textField:'mname',onSelect:loadMaterialSize" /></td>
+							<td>材料规格:</td>
+							<td><input id="materialSize" class="easyui-combobox" style="width: 200px;" data-options="valueField:'id',textField:'msize',onSelect:loadMaterialCount" /></td>
+							
+							
+						</tr>
+						<tr>
+							<td>库存数量:</td>
+							<td id="totalCount"></td>
+							<td>采购数量:</td>
+							<td><input id="buyCount" class="easyui-numberbox" type="text" name="paperCount" /></td>
+							
+						</tr>
+						<tr>
+							<td>供应商:</td>
+							<td><input id="supplierBox" class="easyui-combobox" style="width: 200px;" data-options="valueField:'id',textField:'supName'" /></td>
+							<td>订单价格:</td>
+							<td><input id="formPrice" class="easyui-numberbox" data-options="valueField:'id',textField:'wname'"></input></td>
+						</tr>
+						<tr>
+							<td>采购人:</td>
+							<td colspan="3"><input id="buyPerson" class="easyui-combobox" style="width: 200px;" data-options="valueField:'id',textField:'wname'" /></td>
+						</tr>
+						<tr>
+							<td colspan="4" align="center">
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitBuyForm()">提交</a>
+							</td>
+						</tr>
+						
+					</table>
+				</form>
+			</div>
+		</div>
+		<div title="采购单查询" style="padding:10px;">
+			<table id="cgddg" style="width:780px;height:350px" data-options="
+						rownumbers:true,
+						singleSelect:true,
+						autoRowHeight:false,
+						pagination:true,
+						pageSize:10 ">
+				<thead>
+					<tr>
+						<th field="buyFormCode" width="150">采购单编码</th>
+						<th field="materialName" width="90">原材料名称</th>
+						<th field="materialSize" width="100">规格参数</th>
+						<th field="mcount" width="80" align="right">采购数量</th>
+						<th field="supplierName" width="80" align="right">供应商名称</th>
+						<th field="totalPrice" width="80" align="right">订单价格</th>
+						<th field="buyPersonName" width="80" align="right">采购人</th>
+						<th field="stateName" width="80" align="right">状态</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+		<div title="库存信息" style="padding:10px;">
+			<!--<div class="easyui-panel" style="padding:5px;width:780px;">
+				<span style="padding:3px 5px 3px 10px;">原材料类型：</span>
+				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',selected:true" style="margin:3px 5px 3px 10px;">全部</a>
+				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1'" style="margin:3px 5px 3px 10px;">纸张</a>
+				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1'" style="margin:3px 5px 3px 10px;">油墨</a>
+				<span style="padding:3px 5px 3px 200px;">使用状态：</span>
+				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g2'" style="margin:3px 5px 3px 10px;">全部</a>
+				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g2',selected:true" style="margin:3px 5px 3px 10px;">在用</a>
+				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g2'" style="margin:3px 5px 3px 10px;">停用</a>
+			</div>
+
+			--><table id="kcdg" style="width:780px;height:350px" data-options="
+						rownumbers:true,
+						singleSelect:true,
+						autoRowHeight:false,
+						pagination:true,
+						pageSize:10 ">
+				<thead>
+					<tr>
+						<th field="mtypename" width="120">原材料类型</th>
+						<th field="mname" width="120">原材料名称</th>
+						<th field="msize" width="100">规格参数</th>
+						<th field="munit" width="80" align="right">计量单位</th>
+						<th field="count" width="80" align="right">库存数量</th>
+						<!--<th field="clcustomer" width="80" align="right">供货商</th>
+						<th field="clstate" width="80" align="right">使用状态</th>-->
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</body>
+</html>

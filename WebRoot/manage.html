@@ -1,0 +1,857 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>永兴印刷订单生产管理系统-首页</title>
+	<link rel="stylesheet" type="text/css" href="css/easyui/easyui.css" />
+	<link rel="stylesheet" type="text/css" href="css/easyui/icon.css"/>
+	<link rel="stylesheet" type="text/css" href="css/easyui/demo.css"/>
+	<link rel="stylesheet" type="text/css" href="css/cf/table.css"/>
+	<script type="text/javascript" src="js/easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="js/easyui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/easyui/easyui-lang-zh_CN.js"></script>
+
+	<script type="text/javascript" src="js/json2.js"></script>
+	<script type="text/javascript" src="js/myNames.js"></script>
+	<script type="text/javascript" src="js/myUtils.js"></script>
+	<script type="text/javascript" src="js/myConstants.js"></script>
+	
+</head>
+<body>
+	<div class="easyui-tabs" style="width:auto;height:auto;">
+		
+		<div title="员工管理" style="padding:10px;">
+			<div class="easyui-panel" style="padding:5px;width:780px;">
+				<span style="padding:3px 5px 3px 10px;">员工状态：</span>
+				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',selected:true" style="margin:3px 5px 3px 10px;" onclick="getYGData()">全部</a>
+				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1'" style="margin:3px 5px 3px 10px;" onclick="showWorkerByState('0')">在职</a>
+				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1'" style="margin:3px 5px 3px 10px;" onclick="showWorkerByState('1')">离职</a>
+				
+			</div>
+			<table id="ygdg" style="width:780px;height:350px" data-options="
+						rownumbers:true,
+						singleSelect:true,
+						autoRowHeight:false,
+						pagination:true,
+						pageSize:10,
+						toolbar:toolbar">
+				<thead>
+					<tr>
+						<th field="wname" width="60">员工名称</th>
+						<th field="dutyName" width="80" >职位</th>
+						<th field="phoneNum" width="100">联系电话</th>
+						<th field="phoneNumBak" width="100">备用电话</th>
+						<th field="stateName" width="80" align="right">员工状态</th>
+						<th field="waddress" width="150" align="right">家庭住址</th>
+						<th field="remark" width="80" align="right">备注</th>
+					</tr>
+				</thead>
+			</table>
+			<div id="ygdlg" class="easyui-dialog" title="员工资料" data-options="iconCls:'icon-save',closed:true,modal:true" style="width:500px;height:300px;padding:10px">
+				<form id="ygdlgForm" method="post">
+					<table class="tablecss" >
+						<tr>
+							<th colspan="6" align="center">员工资料</th>
+						</tr>
+						<tr>
+							<td>员工姓名:</td>
+							<td><input id="wname" class="easyui-textbox" type="text" name="name" data-options="required:true"></input></td>
+							
+							<td>职位:</td>
+							<td>
+								<select id="duty" class="easyui-combobox" name="职位" style="width:140px;" data-options="required:true">
+									<option value=0>厂长</option>
+									<option value=1>车间主任</option>
+									<option value=2>印刷工</option>
+									<option value=3>装订工</option>
+									<option value=4>库管</option>
+									<option value=5>出纳</option>
+									<option value=6>采购</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>联系电话:</td>
+							<td><input id="phoneNum" class="easyui-numberbox" type="text" name="name" data-options="required:true" missingMessage="请输入电话号码(格式:0318861000/13900006666)"></input></td>
+							<td>备用电话:</td>
+							<td><input id="phoneNumBak" class="easyui-numberbox" type="text" name="name" data-options="required:true" missingMessage="请输入电话号码(格式:0318861000/13900006666)"></input></td>
+						</tr>
+						<tr>
+							<td>家庭住址:</td>
+							<td colspan="3"><input id="waddress" class="easyui-textbox" type="text" name="name" data-options="required:true"></input></td>
+						</tr>
+						<tr>
+							<td>备注:</td>
+							<td colspan="3"><input id="remark" class="easyui-textbox" type="text" name="name" ></input></td>
+						</tr>
+						<tr>
+							<td colspan="6" align="center"> 
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="commitWorkerInfo()">提交</a>
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearWorkerInfo()">重置</a>
+							</td>
+						</tr>
+						
+					</table>
+				</form>
+				<script>
+				
+					function commitWorkerInfo(){
+						if(workerDlgState == workerDlgState_add){
+							addOrModifyWorkerInfo(null);
+						}else if(workerDlgState == workerDlgState_modify){
+							var wrow = $("#ygdg").datagrid("getSelected");
+							addOrModifyWorkerInfo(wrow);
+						}
+					}
+				
+					function addOrModifyWorkerInfo(workerInfo){
+						var wname = $('#wname').textbox('getValue');
+						var duty = $('#duty').combobox('getValue');
+						var phoneNum = $('#phoneNum').textbox('getValue');
+						var phoneNumBak = $('#phoneNumBak').textbox('getValue');
+						var waddress = $('#waddress').textbox('getValue');
+						var remark = $('#remark').textbox('getValue') ? $('#remark').textbox('getValue') : "无";
+						//alert("wname = " + wname + ", " + duty + ", " + phoneNum + ", " + phoneNumBak + ", " + waddress + ", " + remark);
+						if(!wname){
+							$.messager.alert("提示","请输入员工姓名");
+						}else if(!duty){
+							$.messager.alert("提示","请选择职位");
+						}else if(!phoneNum){
+							$.messager.alert("提示","请输入电话号码");
+						}else if(!phoneNumBak){
+							$.messager.alert("提示","请输入备用电话");
+						}else if(!waddress){
+							$.messager.alert("提示","请输入家庭住址");
+						}else{
+							if(workerDlgState == workerDlgState_add){
+								var data = "{\"wname\":\"" + wname+ 
+										   "\",\"duty\":" + duty + 
+										   ",\"phoneNum\":" + phoneNum + 
+										   ",\"phoneNumBak\":" + phoneNumBak + 
+										   ",\"waddress\":\"" + waddress +
+										   "\",\"remark\":\"" + remark + 
+										   "\",\"state\":" + 0 + 
+										    "}";
+								$.post(opertionUrl+"workerinfo/saveWorkerInfo",{para:data},addWorkerResult,"text");
+							}else if(workerDlgState == workerDlgState_modify){
+								workerInfo.wname = wname;
+								workerInfo.duty = duty;
+								workerInfo.phoneNum = phoneNum;
+								workerInfo.phoneNumBak = phoneNumBak;
+								workerInfo.waddress = waddress;
+								workerInfo.remark = remark;
+								$.post(opertionUrl+"workerinfo/saveWorkerInfo",{para:JSON.stringify(workerInfo)},modifyWorkerResult,"text");
+							}
+						}
+					}
+					
+					function addWorkerResult(sresult){
+						if(sresult == "-1"){
+							$.messager.alert("提示","添加失败");
+						}else{
+							$.messager.alert("提示","添加成功");
+							getYGData();
+							$("#ygdlg").dialog("close");
+						}
+					}
+					
+					function modifyWorkerResult(sresult){
+					
+						
+						if(sresult == "-1"){
+							$.messager.alert("提示","修改失败");
+						}else{
+							
+							var row = $("#ygdg").datagrid("getSelected");
+				            var index = $('#ygdg').datagrid('getRowIndex', row);
+							row.stateName = getWorkerStateName(row.state);
+							
+							row.dutyName = getWorkerDutyName(row.duty);
+							//alert("row.dutyName,row.duty = " + row.dutyName + "," + row.duty);
+				            $('#ygdg').datagrid('refreshRow', index);
+			            
+							$.messager.alert("提示","修改成功");
+							$("#ygdlg").dialog("close");
+						}
+					}
+					
+					function clearWorkerInfo(){
+						$('#ygdlgForm').form('clear');
+					}
+					
+				</script>
+			</div>
+			
+		</div>
+		<div title="原材料类型管理" style="padding:10px;">			
+			<table id="cldg" style="width:780px;height:350px" data-options="
+					rownumbers:true,
+					singleSelect:true,
+					autoRowHeight:false,
+					pagination:true,
+					pageSize:10,
+					toolbar:toolbar1">
+				<thead>
+					<tr>
+						<th field="mtypename" width="80">材料类型</th>
+						<th field="mname" width="150">材料名称</th>
+						<th field="msize" width="100">规格型号</th>
+						<th field="munit" width="80" >计数单位</th>
+						<th field="mstatename" width="80" >状态</th>
+						<th field="mremark" width="150" >备注</th>
+					</tr>
+				</thead>
+			</table>
+			<div id="addcldlg" class="easyui-dialog" title="原材料信息" data-options="iconCls:'icon-save',closed:true,modal:true" style="width:500px;height:300px;padding:10px">
+				<form id="ff3" method="post">
+					
+					<table class="tablecss" >
+						<tr>
+							<th colspan="6" align="center">原材料信息</th>
+						</tr>
+						
+						<tr>
+							<td>材料类型:</td>
+							<td>
+								<select id="addmtypeType" class="easyui-combobox" name="材料类型" style="width:140px;" data-options="onSelect:getCLDTypeByType,required:true">
+									<option value=1>纸张</option>
+									<option value=2>油墨</option>									
+								</select>
+							</td>
+							
+							<td>材料名称:</td>
+							<td>
+								<select id="addmtypeName" class="easyui-combobox" name="材料名称" style="width:140px;" 
+										data-options="
+											required:true,
+											editable:false,
+											valueField:'dtype',
+											textField:'mname' ">
+								</select>
+							</td>
+						</tr>
+						
+						<tr>
+							<td>规格型号:</td>
+							<td><input id="addmsize" class="easyui-numberbox" type="text" name="name" data-options="required:true" missingMessage="规格型号为数字必输项"></input></td>			
+							<td>计数单位:</td>
+							<td><input id="addmunit" class="easyui-textbox" type="text" name="name" data-options="required:true"></input></td>
+						</tr>
+						
+						<tr>
+							<td>状态:</td>
+							<td>
+								<select id="addmstate" class="easyui-combobox" name="状态" style="width:140px;">
+									<option value=1>在用</option>
+									<option value=0>停用</option>									
+								</select>
+							
+							</td>
+							<td>备注:</td>
+							<td colspan="3"><input id="addmremark" class="easyui-textbox" type="text" name="name" ></input></td>
+						</tr>
+						
+						<tr>
+							<td colspan="6" align="center"> 
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="addMerielInfo()">提交</a>
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearMerielInfo()">重置</a>
+							</td>
+						</tr>
+						
+					</table>
+				</form>
+				<script>
+					function addMerielInfo(){
+						var mname = $('#addmtypeName').combobox('getText');
+						var mtype = $('#addmtypeType').combobox('getValue');
+						var dtype = $('#addmtypeName').combobox('getValue');
+						var msize = $('#addmsize').textbox('getValue');
+						var munit = $('#addmunit').textbox('getValue');
+						var mstate = $('#addmstate').combobox('getValue')
+						var mremark = $('#addmremark').textbox('getValue');
+						//alert("mtype = " + mtype + ", " + mname + ", " + dtype + ", " + msize + ", " + munit + ", " + mstate + ", " + mremark);
+						if(!mname){
+							$.messager.alert("提示","请选择材料名称");
+						}else if(!msize){
+							$.messager.alert("提示","请输入规格型号");
+						}else if(!munit){
+							$.messager.alert("提示","请输入计量单位");
+						}else{
+							var data = "{\"mname\":\"" + mname+ 
+									   "\",\"mtype\":" + mtype + 
+									   ",\"dtype\":" + dtype + 
+									   ",\"msize\":" + msize + 
+									   ",\"munit\":\"" + munit +
+									   "\",\"mstate\":" + mstate + 
+									   ",\"mremark\":\"" + mremark + 
+									    "\"}";
+							$.post(opertionUrl+"material/saveMaterialType",{para:data},addResult,"text");
+						}
+						
+					}
+					
+					function addResult(sresult){
+						alert("sresult,sresult == \"undefined\" = " + sresult + "," + (sresult == "undefined"));
+						if(sresult == "-2"){
+							$.messager.alert("提示","该材料已经存在 ");
+						}else if(sresult == "-1" || sresult == "undefined"){
+							$.messager.alert("提示","添加材料失败 错误信息: " + sresult);
+						}else{
+							$.messager.alert("提示","添加材料成功");
+							getCLData();
+							$("#addcldlg").dialog("close");
+						}
+					}
+					
+					function clearMerielInfo(){
+						$('#ff3').form('clear');
+					}
+					
+				</script>
+			</div>
+			
+		</div>
+		<div title="用户管理" style="padding:10px;">			
+			<table id="uidg" style="width:780px;height:350px" data-options="
+					rownumbers:true,
+					singleSelect:true,
+					autoRowHeight:false,
+					pagination:true,
+					pageSize:10,
+					toolbar:toolbar2">
+				<thead>
+					<tr>
+						<th field="loginName" width="150">用户名</th>
+						<th field="typeName" width="80">用户类型</th>
+						<th field="phoneNum" width="150">联系电话</th>
+					</tr>
+				</thead>
+			</table>
+			<div id="uidlg" class="easyui-dialog" title="增加用户" data-options="iconCls:'icon-save',closed:true,modal:true" style="width:300px;height:400px;padding:10px">
+				<form id="ff4" method="post" action="">
+					<table class="tablecss" >
+						<tr>
+							<th colspan="2" align="center">用户信息</th>
+						</tr>
+						<tr>
+							<td>用户名:</td>
+							<td><input id="username" class="easyui-textbox" type="text" name="name" data-options="required:true"/></td>
+                        </tr>
+                        <tr>
+							<td>密码:</td>
+							<td><input id="password1" class="easyui-textbox" type="password" name="name" data-options="required:true"/></td>
+                        </tr>
+                         <tr>
+							<td>重复密码:</td>
+							<td><input id="password2" class="easyui-textbox" type="password" name="name" data-options="required:true"/></td>
+                        </tr>
+                        <tr class="calendar-menu-month">
+							<td>用户类型:</td>
+							<td>
+								<select id="addusertypeBox" class="easyui-combobox" name="用户类型" style="width:140px;" 
+										data-options="
+											required:true,
+											editable:false,
+											valueField:'userType',
+											textField:'typeName' ">
+								</select>
+							</td>
+						</tr>
+						<tr>
+						  <td>联系电话:</td>
+							<td><input id="phonenum" class="easyui-numberbox" type="text" name="name" data-options="required:true" missingMessage="请输入电话号码(格式:0318861000/13900006666)"></input></td>			
+						</tr>
+						
+						<tr>
+							<td colspan="6" align="center"> 
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="addUser()">增加用户</a>
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearUser()">重置</a>
+							</td>
+						</tr>
+						
+					</table>
+				</form>
+				<script>
+					function addUser(){
+						var username = $('#username').val();
+						var usertype = $("#addusertypeBox").combobox('getValue');
+						var typename = $("#addusertypeBox").combobox('getText');
+						var password1 = $('#password1').val();
+						var password2 = $('#password2').val();
+						var userphone = $('#phonenum').val();
+						if(isStringEmpty(username)){
+							$.messager.alert("提示","请输入用户名");
+						}else if(isStringEmpty(usertype)){
+							$.messager.alert("提示","请选择一个用户类型");
+						}else if(isStringEmpty(password1)){
+							$.messager.alert("提示","请输入密码");
+						}else if(password1 == password2){
+							var userdata = "{\"loginName\":\"" + username + 
+										   "\",\"userType\":\"" + usertype + 
+										   "\",\"passWord\":\"" + password1 + 
+										   "\",\"phoneNum\":\"" + userphone +
+										   "\",\"typeName\":\"" + typename +
+										    "\"}";
+							$.post(opertionUrl+"userinfo/saveUserInfo",{para:userdata},addUserResult,"text");
+						}else{
+							$.messager.alert("提示","2次密码输入不一致, 请重新输入");
+						}
+						//$('#ff4').form('submit');
+					}
+					function addUserResult(sresult){
+						if(sresult == "-2"){
+							$.messager.alert("提示","该用户已经存在 ");
+						}else if(sresult == "-1"){
+							$.messager.alert("提示","添加用户失败 错误信息 " + sresult);
+						}else{
+							$.messager.alert("提示","添加用户成功");
+							$("#uidlg").dialog("close");
+							getUIData();
+						}
+					}
+					function clearUser(){
+						$('#ff4').form('clear');
+					}
+					
+				</script>
+			</div>
+            <div id="mrldlg" class="easyui-dialog" title="修改权限" data-options="iconCls:'icon-save',closed:true,modal:true" style="width:300px;height:250px;padding:10px">
+				<form id="ff4" method="post">
+					<table class="tablecss" >
+						<tr>
+							<th colspan="2" align="center">用户信息</th>
+						</tr>
+						<tr>
+							<td>用户名:</td>
+							<td id="usernameInRole">mdadmin</td>
+                        </tr>
+          
+						<tr class="calendar-menu-month">
+							<td>用户类型:</td>
+							<td>
+								<select id="roleusertypebox" class="easyui-combobox" name="用户类型" style="width:140px;" 
+										data-options="
+											required:true,
+											editable:false,
+											valueField:'userType',
+											textField:'typeName' ">
+								</select>
+							</td>
+						</tr>
+						
+						<tr>
+							<td colspan="6" align="center"> 
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="modifyUserType()">修改</a>
+							</td>
+						</tr>
+						
+					</table>
+				</form>
+				<script>
+					function modifyUserType(){
+						var rowval = $("#uidg").datagrid("getSelected");					
+						var usertype = $("#roleusertypebox").combobox('getValue');
+						var typeName =  $("#roleusertypebox").combobox('getText');
+						rowval.userType = usertype;
+						rowval.typeName = typeName;
+						if(usertype){
+							$.post(opertionUrl+"userinfo/updateUserByLoginname",{para:JSON.stringify(rowval)},modifyRoleResult,"text");
+						}else{
+							$.messager.alert("提示","请选择要修改的权限");
+						}
+					}
+					function modifyRoleResult(sresult){
+						if(sresult == "-1"){
+							$.messager.alert("提示","修改失败");
+						}else{
+							$.messager.alert("提示","修改成功");
+//							getUIData();
+							refreshTableSelectedRow($("#uidg"));
+				            
+							$("#mrldlg").dialog("close");
+						}
+					}
+				</script>
+			</div>
+            <div id="mpsdlg" class="easyui-dialog" title="修改密码" data-options="iconCls:'icon-save',closed:true,modal:true" style="width:300px;height:250px;padding:10px">
+				<form id="ff4" method="post">
+					<table class="tablecss" >
+						<tr>
+							<th colspan="2" align="center">用户信息</th>
+						</tr>
+						<tr>
+							<td>用户名:</td>
+							<td id="usernameInPassword">mdadmin</td>
+                        </tr>
+          
+						<tr>
+							<td>密码:</td>
+							<td><input id="modifypassword1" class="easyui-textbox" type="password" name="name" data-options="required:true"/></td>
+                        </tr>
+                        <tr>
+							<td>重复密码:</td>
+							<td><input id="modifypassword2" class="easyui-textbox" type="password" name="name" data-options="required:true"/></td>
+                        </tr>
+						
+						<tr>
+							<td colspan="6" align="center"> 
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="modifyPassword()">修改</a>
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearPassword()">重置</a>
+							</td>
+						</tr>
+						
+					</table>
+				</form>
+				<script>
+					function modifyPassword(){
+						var rowval = $("#uidg").datagrid("getSelected");					
+						var password1 = $("#modifypassword1").val();
+						var password2 = $("#modifypassword2").val();
+						if(isStringEmpty(password1)){
+							$.messager.alert("提示","请输入密码");
+						}else if(password1 != password2){
+							$.messager.alert("提示","2次密码输入不一致, 请重新输入");
+						}else{
+							rowval.passWord = password1;
+							$.post(opertionUrl+"userinfo/updateUserByLoginname",{para:JSON.stringify(rowval)},modifyPasswordResult,"text");
+						}
+					}
+					function modifyPasswordResult(sresult){
+						$("#mpsdlg").dialog("close");
+						if(sresult == "-1"){
+							$.messager.alert("提示","修改失败");
+						}else{
+							$.messager.alert("提示","修改成功");
+//							getUIData();
+							refreshTableSelectedRow($("#uidg"));
+				            $("#mpsdlg").dialog("close");
+						}
+					}
+					
+				</script>
+			</div>
+            <div id="mphdlg" class="easyui-dialog" title="修改电话" data-options="iconCls:'icon-save',closed:true,modal:true" style="width:300px;height:250px;padding:10px">
+				<form id="ff4" method="post">
+					<table class="tablecss" >
+						<tr>
+							<th colspan="2" align="center">用户信息</th>
+						</tr>
+						<tr>
+							<td>用户名:</td>
+							<td id="usernameInPhonenum">mdadmin</td>
+                        </tr>
+          
+						<tr>
+							<td>联系电话:</td>
+							<td><input id="userPhonenum" class="easyui-numberbox" type="text" name="name" data-options="required:true" missingMessage="请输入电话号码(格式:0318861000/13900006666)"></input></td>			
+						</tr>
+						
+						<tr>
+							<td colspan="6" align="center"> 
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="modifyPhonenum()">修改</a>
+							</td>
+						</tr>
+						
+					</table>
+				</form>
+				<script>
+					function modifyPhonenum(){
+						var rowval = $("#uidg").datagrid("getSelected");					
+						var phoneNum = $("#userPhonenum").val();
+						//alert("phoneNum = " + phoneNum);
+						rowval.phoneNum = phoneNum;
+						$.post(opertionUrl+"userinfo/updateUserByLoginname",{para:JSON.stringify(rowval)},modifyPhonedResult,"text");
+					}
+					function modifyPhonedResult(sresult){
+						$("#mphdlg").dialog("close");
+						if(sresult == "-1"){
+							$.messager.alert("提示","电话修改失败!");
+						}else{
+							$.messager.alert("提示","电话修改成功!");
+							refreshTableSelectedRow($("#uidg"));
+						    
+				            $("#mphdlg").dialog("close");
+						}
+					}
+					/*function clearPhonenum(){
+						$('#ff4').form('clear');
+					}*/
+					
+				</script>
+			</div>
+		</div>
+		<script>
+				var workerDlgState_add = 0;
+				var workerDlgState_modify = 1;
+				var workerDlgState = -1;
+				function isStringEmpty(str){
+					return str == null || str == "";
+				}
+				
+				var toolbar = [{
+						text:'增加',
+						iconCls:'icon-add',
+						handler:function(){addWorker();}
+					},
+					{	text:'修改',
+						iconCls:'icon-edit',
+						handler:function(){modifyWorker();}
+					},
+					{	text:'离职',
+						iconCls:'icon-man',
+						handler:function(){outDuty();}
+					}];
+				var toolbar1 = [{
+						text:'增加',
+						iconCls:'icon-add',
+						handler:function(){addMateriel();}
+					},
+					{	text:'修改状态',
+						iconCls:'icon-edit',
+						handler:function(){modifyMateriel();}
+					}];
+				var toolbar2 = [{
+						text:'增加',
+						iconCls:'icon-add',
+						handler:function(){addUserInfo();}
+					},
+					{	text:'修改权限',
+						iconCls:'icon-edit',
+						handler:function(){modifyUserRole();}
+					},
+					{	text:'修改电话',
+						iconCls:'icon-edit',
+						handler:function(){modifyUserPhone();}
+					},
+					{	text:'修改密码',
+						iconCls:'icon-edit',
+						handler:function(){modifyUserPassword();}
+					}];
+					
+				
+				function addUserInfo(){
+					//打开增加用户对话框
+					$("#uidlg").dialog("open");
+				}
+				function modifyUserRole(){
+					//打开修改用户权限对话框
+					var urow = $("#uidg").datagrid("getSelected");
+					if(urow){
+						$("#usernameInRole").html(urow.loginName);
+						$("roleusertypebox").combobox("setValue",urow.userType);
+						$("#mrldlg").dialog("open");
+					}else{
+						$.messager.alert("操作提示","请选择要修改的用户");
+					}
+				}
+				function modifyUserPassword(){
+					//打开修改密码对话框
+					var urow = $("#uidg").datagrid("getSelected");
+					if(urow){
+						$("#usernameInPassword").html(urow.loginName);
+						$("#mpsdlg").dialog("open");
+					}else{
+						$.messager.alert("操作提示","请选择要修改的用户");
+					}
+				}
+				function modifyUserPhone(){
+					//打开修改电话对话框
+					var urow = $("#uidg").datagrid("getSelected");
+					if(urow){
+						$("#userPhonenum").textbox('setValue',urow.phoneNum);
+						$("#usernameInPhonenum").html(urow.loginName);
+						$("#mphdlg").dialog("open");
+					}else{
+						$.messager.alert("操作提示","请选择要修改的用户");
+					}
+				}
+				function addWorker(){
+					//添加员工
+					clearWorkerInfo();
+					workerDlgState = workerDlgState_add;
+					$("#ygdlg").dialog("open");
+				}
+				function modifyWorker(){
+					//修改员工信息
+					workerDlgState = workerDlgState_modify;
+					var wrow = $("#ygdg").datagrid("getSelected");
+					if(wrow){
+						$("#ygdlg").dialog("open");
+						$("#wname").textbox('setValue',wrow.wname);
+						$("#duty").combobox('setValue',wrow.duty);
+						$("#phoneNum").textbox('setValue',wrow.phoneNum);
+						$("#phoneNumBak").textbox('setValue',wrow.phoneNumBak);
+						$("#waddress").textbox('setValue',wrow.waddress);
+						$("#remark").textbox('setValue',wrow.remark);
+					}else{
+						$.messager.alert("操作提示","请选择要修改的员工");
+					}
+				}
+				
+				function outDuty(){
+					var wrow = $("#ygdg").datagrid("getSelected");
+					if(wrow){
+						if(wrow.state == 1){
+							$.messager.alert("操作提示","这个员工已离职, 不需要进行此操作");
+						}else{
+							$.messager.confirm("操作提示", "您确定员工 " + wrow.wname + " 已经离职了吗?", function (data) {  
+								if (data) { 
+									wrow.state = 1;
+									wrow.stateName = getWorkerStateName(wrow.state);
+									$.post(opertionUrl+"workerinfo/saveWorkerInfo",{para:JSON.stringify(wrow)},modifyWorkerResult,"text");
+								}  
+							});
+						}
+					}else{
+						$.messager.alert("操作提示","请选择要离职的员工");
+					}
+				}
+				
+				//打开添加材料对话框
+				function addMateriel(){
+					getCLDTypeByType();					
+					$("#addcldlg").dialog("open");
+				}
+
+				//打开修改材料对话框
+				function modifyMateriel(){
+					
+					var mrow = $("#cldg").datagrid("getSelected");
+					if(mrow){
+						$.messager.confirm("操作提示", "您确定修改材料状态吗？", function (data) {  
+							if (data) { 
+								mrow.mstate = mrow.mstate ^ 1;
+								$.post(opertionUrl+"material/updateMaterialById",{para:JSON.stringify(mrow)},modifyMaterialResult,"text");
+							}  
+						});
+					}else{
+						$.messager.alert("操作提示","请选择要修改的材料");
+					}
+				}
+				
+				function modifyMaterialResult(sresult){
+					if(sresult == "-1"){
+						$.messager.alert("提示","修改失败");
+					}else{
+						//getCLData();		//刷新材料数据
+						$.messager.alert("提示","修改成功");
+						
+						var row = $("#cldg").datagrid("getSelected");
+			            var index = $('#cldg').datagrid('getRowIndex', row);
+			            row.mstatename = getMaterialStateName(row.mstate);
+			            $('#cldg').datagrid('refreshRow', index);
+					}
+				}
+				
+				
+
+				
+				
+				
+				//填充材料表单中的shuju
+				function fillMaterialData(jsdata){
+					var materialData = eval(jsdata); 
+					var clrows = [];
+					for(var m = 0; m < materialData.length; m++){						
+						clrows.push({
+							id:materialData[m].id,
+							mname:materialData[m].mname,
+							mtype:materialData[m].mtype,
+							msize:materialData[m].msize,
+							munit:materialData[m].munit,							
+							dtype:materialData[m].dtype,
+							mtypename:getTypeName(materialData[m].mtype),
+							mstate:materialData[m].mstate,
+							mstatename:getMaterialStateName(materialData[m].mstate),
+							mremark:materialData[m].mremark
+						});
+					}
+					$("#cldg").datagrid({loadFilter:pagerFilter,loadMsg:'数据正在加载,请耐心的等待...',striped:true}).datagrid('loadData', clrows)
+//					$('#cldg').datagrid({data:clrows}).datagrid('clientPaging');
+				}
+				
+				function getCLData(){
+					//从服务器获取材料数据
+					$.post(opertionUrl+"material/findAllMaterialType",fillMaterialData,"text");
+				}
+				function getCLDTypeByType(){
+					//从服务器获取材料数据
+					var type = $("#addmtypeType").combobox('getValue');
+					$.post(opertionUrl+"material/findAllMaterialDTypeByType",{para:type},fillMaterialDtypeData,"text");
+				}
+				function fillMaterialDtypeData(jsdata){
+					//$.messager.alert("提示","jsdata = " + jsdata);
+					$("#addmtypeName").combobox('loadData', eval(jsdata));
+				}
+				
+				
+				
+				//用户信息
+				//获取状态名
+				
+				function fillUserInfoData(jsdata){
+					var data = eval(jsdata)
+					$("#uidg").datagrid({loadFilter:pagerFilter,loadMsg:'数据正在加载,请耐心的等待...',striped:true}).datagrid('loadData', data)
+				}
+				function getUIData(){
+					//从服务器获取用户数据
+					$.post(opertionUrl+"userinfo/findAllUserInfo",fillUserInfoData,"text");
+				}
+				function getUIType(){
+					//从服务器获取用户权限数据
+					$.post(opertionUrl+"userinfo/findAllUserType",loadUserTypeSuccess,"text");
+				}
+				function loadUserTypeSuccess(data){
+					$("#addusertypeBox").combobox('loadData', eval(data));
+					$("#roleusertypebox").combobox('loadData', eval(data));
+				}
+				
+				//用户信息
+					
+				//员工信息
+				
+				//填充员工表中的数据
+				function loadWorkerDataSuccess(jsdata){
+					var workderData = eval(jsdata); 
+					var clrows = [];
+					for(var m = 0; m < workderData.length; m++){						
+						clrows.push({
+							id:workderData[m].id,
+							wname:workderData[m].wname,
+							waddress:workderData[m].waddress,
+							phoneNum:workderData[m].phoneNum,
+							phoneNumBak:workderData[m].phoneNumBak,
+							remark:workderData[m].remark,
+							state:workderData[m].state,
+							stateName:getWorkerStateName(workderData[m].state),
+							duty:workderData[m].duty,
+							dutyName:getWorkerDutyName(workderData[m].duty),
+						});
+					}
+					$("#ygdg").datagrid({loadFilter:pagerFilter,loadMsg:'数据正在加载,请耐心的等待...',striped:true}).datagrid('loadData', clrows)
+				}
+				
+				
+				function getYGData(){
+					//从服务器获取所有员工数据并显示
+					$.post(opertionUrl+"workerinfo/findAllWorkerInfo",loadWorkerDataSuccess,"text");
+				}
+				function showWorkerByState(sstate){
+					//根据是否在职的状态筛选员工
+					$.post(opertionUrl+"workerinfo/findWorkerByState",{state:sstate},loadWorkerDataSuccess,"text");
+				}
+				//员工信息
+
+				
+				$(function(){
+					getCLData();			//获取材料数据
+					getUIData();			//获取用户信息数据
+					getUIType();			//获取用户类型数据
+					
+					getYGData();			//获取员工数据
+				});
+
+			</script>
+	</div>
+</body>
+</html>
