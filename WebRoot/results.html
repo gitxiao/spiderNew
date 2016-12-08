@@ -15,13 +15,34 @@
 	<script type="text/javascript" src="js/myUtils.js"></script>
 	<script type="text/javascript" src="js/myNames.js"></script>
 	<script>
-		var spiderServer = "http://192.168.33.56:8080/YXYS/services/";
+		var spiderServer = "http://192.168.33.56:8080/spiderNew/services/";
 		//var spiderServer = "http://localhost:8080/SSH_spider/services/";
 		
 		$(function(){
-			getData();		
+			getMoreRecent();
+			//getData();		
 		});
 		
+		
+		function getMoreRecent(){
+            $('#kcdg').datagrid({
+	            title:"结果显示",
+	            url:"services/NewsService/findNews",
+	            columns:[[
+	            	{field:'title',title:'标题',width:400,
+	            		formatter:function(value,row,index){
+	            					//alert("value,row,index = " + value + "," + row + "," + index);
+	            					printObject(value,'value' + index,1);
+	            					printObject(row,'row' + index,1);
+        				   			return '<a style="color:blue" href=' + row.url + '>' + row.title + '</a>';
+     							}
+     		 		},
+		            {field:'keyword',title:'关键字',width:100},
+		            {field:'pubDate',title:'发布日期',width:100},
+		            {field:'depth',title:'深度',width:50}
+            	]]
+            });
+	    }
 		
 		//装载爬取数据
 		function fillData(data){
@@ -48,9 +69,9 @@
 				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g2'" style="margin:3px 5px 3px 10px;">全部</a>
 				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g2',selected:true" style="margin:3px 5px 3px 10px;">在用</a>
 				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g2'" style="margin:3px 5px 3px 10px;">停用</a>
-			</div>
+			</div>-->
 
-			--><table id="kcdg" style="width:780px;height:350px" data-options="
+			<table id="kcdg" style="width:780px;height:350px" data-options="
 						rownumbers:true,
 						singleSelect:true,
 						autoRowHeight:false,
@@ -58,7 +79,7 @@
 						pageSize:10 ">
 				<thead>
 					<tr>
-						<th field="title" width="120">标题</th>
+						<th field="title" width="120" >标题</th>
 						<th field="url" width="120">网址</th>
 						<th field="keyword" width="100">关键字</th>
 						<th field="pubDate" width="80" align="right">发布日期</th>

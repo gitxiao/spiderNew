@@ -15,6 +15,14 @@ public class T_News {
 		
 	}
 	public T_News(String url,Integer depth){
+		
+		if(url != null){
+			int length = url.length();
+			if(url.endsWith("/")){			//当url以/结尾时,去掉/,否则后台页面显示时,超链接无法识别
+				url = url.substring(0,length - 1);
+			}
+		}
+		
 		this.url = url;
 		this.depth = depth;
 	}
