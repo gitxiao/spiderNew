@@ -34,7 +34,9 @@
 	            					//alert("value,row,index = " + value + "," + row + "," + index);
 	            					printObject(value,'value' + index,1);
 	            					printObject(row,'row' + index,1);
-        				   			return '<a style="color:blue" href=' + row.url + '>' + row.title + '</a>';
+	            					
+	            					var title = row.title ? row.title : row.url;
+        				   			return '<a style="color:blue" href=' + row.url + '>' + title + '</a>';
      							}
      		 		},
 		            {field:'keyword',title:'关键字',width:100},
@@ -46,12 +48,18 @@
 		
 		//装载爬取数据
 		function fillData(data){
-			alert("data = " + data);
 			$("#kcdg").datagrid({loadFilter:pagerFilter,loadMsg:'数据正在加载,请耐心的等待...',striped:true}).datagrid('loadData', data)
 		}
 		function getData(){
 			//从服务器获取材数据
 			$.post(spiderServer + "NewsService/findNews",{para:"我是参数"},fillData,"json");
+		}
+		
+		function startSpider(){
+			$.post(spiderServer + "CtrlService/startSpider",{para:"我是参数"},fillData,"json");
+		}
+		function stopSpider(){
+			$.post(spiderServer + "CtrlService/stopSpider",{para:"我是参数"},null,"json");
 		}
 		
 	</script>
@@ -107,6 +115,26 @@
 						<tr>
 							<td colspan="4" align="center">
 								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitMIForm()">提交</a>
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div>
+		</div>
+		
+		<div title="启动和结束" style="padding:10px;">
+			<div style="padding:10px 60px 20px 60px">
+				<form id="miff" method="post">
+					<table class="tablecss" style="width:800px;">
+						<tr>
+							<th colspan="6" align="center">爬虫开关</th>
+						</tr>
+						<tr>
+							<td colspan="4" align="center">
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="startSpider()">启动</a>
+							</td>
+							<td colspan="4" align="center">
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="stopSpider()">结束</a>
 							</td>
 						</tr>
 					</table>
