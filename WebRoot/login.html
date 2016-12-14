@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>永兴印刷订单生产管理系统-登录</title>
+<title>爬虫后台管理-登录</title>
 <link href="css/dwz/login.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="css/easyui/easyui.css" />
 <link rel="stylesheet" type="text/css" href="css/easyui/icon.css" />
@@ -11,38 +11,33 @@
 <script type="text/javascript" src="js/easyui/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="js/easyui/easyui-lang-zh_CN.js"></script>
 
+<style>
+	.login { display:block; width:240px; padding:40px 20px 0 20px;}
+	.login p { margin:10px 0;}
+	.login label { float:left; width:70px; padding:0 0 0 10px; line-height:25px; color:#4c4c4c; font-size:14px;}
+	.login input { padding:3px 2px; border-style:solid; border-width:1px; border-color:#80a5c4;}
+	.login .login_input {}
+	.login .code { float:left; margin-right:5px;}
+	.login { padding-left:70px;}
+	.login .sub { display:block; width:75px; height:30px; border:none; background:url(../../img/dwz/login_sub.png) no-repeat; cursor:pointer;}
+	.login_footer { clear:both; display:block; margin-bottom:20px; color:#666; text-align:center;}
+</style>
 
 </head>
 
 <body>
-	<div id="login">
-		<div id="login_header">
-			<h1 class="login_logo">
-				<a href="#"><img src="img/dwz/login_logo.gif" /></a>
-			</h1>
-			<div class="login_headerContent">
-				<div class="navList">
-					<ul>
-						<li><a href="#">设为首页</a></li>
-						<!--
-						<li><a href="http://bbs.dwzjs.com">反馈</a></li>-->
-						<li><a href="#" target="_blank">添加收藏</a></li>
-						
-					</ul>
-				</div>
-				<h2 class="login_title"><img src="img/dwz/login_title.png" /></h2>
-			</div>
-		</div>
-		<div id="login_content">
-			<div class="loginForm">
-				<form id="loginform" action="index.html">
+	<div id="login" align="center">
+		
+		<div id="login_content" align="center">
+			<div class="login" align="center">
+				<form id="loginform" action="index.html" align="center">
 					<p>
-						<label>用户名：</label>
-						<input type="text" id="username" name="username" size="20" class="login_input" />
+						<label align="center">用户：</label>
+						<input type="text" id="name" name="name" size="20" />
 					</p>
 					<p>
-						<label>密码：</label>
-						<input type="password" id="password" name="password" size="20" class="login_input" />
+						<label align="center">密码：</label>
+						<input type="password" id="password" name="password" size="20" />
 					</p>
 					<!--
 					<p>
@@ -56,13 +51,15 @@
 					</div>
 				</form>
 			</div>
-			<div class="login_banner"><img src="img/dwz/login_banner.jpg" /></div>
-
 		</div>
+		<div class="login_footer">
+			Copyright &copy; 2017 ChunFeng SoftWare Inc. All Rights Reserved.
+		</div>
+		
 		<script>
 			function submitForm(){
-				var  opertionUrl = "http://192.168.33.56:8080/YXYS/services/"
-				$.post(opertionUrl+"userinfo/checkUserPassword",{userName:$('#username').val(),passWord:$('#password').val()},loginSuccess,"text");
+				var opertionUrl = "http://localhost:8080/spiderNew/services/"
+				$.post(opertionUrl+"user/checkUserPassword",{name:$('#name').val(),password:$('#password').val()},loginSuccess,"text");
 			}
 			function loginSuccess(data){
 				if(data=='nouser'){
@@ -70,13 +67,10 @@
 				}else if(data=="failpass"){
 					$.messager.alert("操作提示", "密码错误！","error");
 				}else{
-					location.href = "index.html?safecode="+data;
+					location.href = "index.html?safecode=" + data;
 				}
 			}
 		</script>
-		<div id="login_footer">
-			Copyright &copy; 2016 ChunFeng SoftWare Inc. All Rights Reserved.
-		</div>
 	</div>
 </body>
 </html>

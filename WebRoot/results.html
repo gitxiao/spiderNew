@@ -32,8 +32,8 @@
 	            	{field:'title',title:'标题',width:400,
 	            		formatter:function(value,row,index){
 	            					//alert("value,row,index = " + value + "," + row + "," + index);
-	            					printObject(value,'value' + index,1);
-	            					printObject(row,'row' + index,1);
+	            					//printObject(value,'value' + index,1);
+	            					//printObject(row,'row' + index,1);
 	            					
 	            					var title = row.title ? row.title : row.url;
         				   			return '<a style="color:blue" href=' + row.url + '>' + title + '</a>';
@@ -68,17 +68,6 @@
 	<div class="easyui-tabs" style="width:auto;height:auto;">
 		
 		<div title="结果展示" style="padding:10px;">
-			<!--<div class="easyui-panel" style="padding:5px;width:780px;">
-				<span style="padding:3px 5px 3px 10px;">按关键字：</span>
-				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',selected:true" style="margin:3px 5px 3px 10px;">全部</a>
-				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1'" style="margin:3px 5px 3px 10px;">纸张</a>
-				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1'" style="margin:3px 5px 3px 10px;">油墨</a>
-				<span style="padding:3px 5px 3px 200px;">按日期：</span>
-				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g2'" style="margin:3px 5px 3px 10px;">全部</a>
-				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g2',selected:true" style="margin:3px 5px 3px 10px;">在用</a>
-				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g2'" style="margin:3px 5px 3px 10px;">停用</a>
-			</div>-->
-
 			<table id="kcdg" style="width:780px;height:350px" data-options="
 						rownumbers:true,
 						singleSelect:true,
@@ -99,14 +88,27 @@
 		
 		<div title="自定义爬虫" style="padding:10px;">
 			<div style="padding:10px 60px 20px 60px">
-				<form id="miff" method="post">
+				<form id="keyword" method="post">
 					<table class="tablecss" style="width:800px;">
 						<tr>
-							<th colspan="6" align="center">自定义爬虫</th>
+							<th colspan="6" align="center">自定义关键字</th>
 						</tr>
 						<tr>
 							<td>自定义关键字:</td>
 							<td><input id="enterCount" class="easyui-numberbox" type="text" /></td>
+						</tr>
+						<tr>
+							<td colspan="4" align="center">
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitMIForm()">提交</a>
+							</td>
+						</tr>
+					</table>
+				</form>
+				<br />
+				<form id="website" method="post">
+					<table class="tablecss" style="width:800px;">
+						<tr>
+							<th colspan="6" align="center">自定义网址</th>
 						</tr>
 						<tr>
 							<td>自定义网址:</td>
