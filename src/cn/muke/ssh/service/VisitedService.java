@@ -38,7 +38,6 @@ public class VisitedService {
 	@Produces("application/json")
 	public void save(@FormParam("para") String para){
 		try {
-			System.out.println("VisitedService save");
 			t_VisitedDao.save(T_Visited.class,para);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -48,7 +47,6 @@ public class VisitedService {
 	 */
 	public void save(T_Visited t_Visited){
 		try {
-			System.out.println("VisitedService save");
 			t_VisitedDao.save(t_Visited);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -65,6 +63,7 @@ public class VisitedService {
 	public T_Visited findVisitedByUrl(@FormParam("url") String url){
 		T_Visited tVisited = null;
 		tVisited = t_VisitedDao.findByUrl(url);
-		return tVisited;
+//		return tVisited;
+		return null;
 	}
 }

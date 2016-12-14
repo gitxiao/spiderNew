@@ -2,11 +2,10 @@ package com.cfrj.spider.worker;
 
 import java.util.logging.Logger;
 
-import cn.muke.ssh.dao.T_NewsDao;
 import cn.muke.ssh.domain.T_News;
 import cn.muke.ssh.service.NewsService;
 
-import com.cfrj.spider.SpiderStarter;
+import com.cfrj.spider.SpiderThread;
 import com.cfrj.spider.fetcher.PageFetcher;
 import com.cfrj.spider.handler.ContentHandler;
 import com.cfrj.spider.model.FetchedPage;
@@ -82,7 +81,7 @@ public class SpiderWorker implements Runnable{
 					e.printStackTrace();
 				}
 			}
-			SpiderStarter.wokerEnd();
+			SpiderThread.wokerEnd();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

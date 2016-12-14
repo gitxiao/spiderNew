@@ -9,6 +9,7 @@ public class T_News {
 	private String title;
 	private Date pubDate;
 	private String keyword;
+	private String keywordNum;
 	private Integer depth;
 	
 	public T_News(){
@@ -64,13 +65,18 @@ public class T_News {
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
 	}
+	public String getKeywordNum() {
+		return keywordNum;
+	}
+	public void setKeywordNum(String keywordNum) {
+		this.keywordNum = keywordNum;
+	}
 	public Integer getDepth() {
 		return depth;
 	}
 	public void setDepth(Integer depth) {
 		this.depth = depth;
 	}
-	
 	
 	
 }

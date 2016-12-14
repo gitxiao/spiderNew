@@ -50,6 +50,8 @@
 		-->
 		<mapping resource="cn/muke/ssh/domain/T_News.hbm.xml" />
 		<mapping resource="cn/muke/ssh/domain/T_Visited.hbm.xml" />
+		<mapping resource="cn/muke/ssh/domain/T_Website.hbm.xml" />
+		<mapping resource="cn/muke/ssh/domain/T_Keyword.hbm.xml" />
 
 	</session-factory>
 

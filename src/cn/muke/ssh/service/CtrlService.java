@@ -6,7 +6,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import com.cfrj.spider.SpiderStarter;
+import com.cfrj.spider.SpiderThread;
 
 /**
  * 业务层
@@ -24,7 +24,7 @@ public class CtrlService{
 	@Path("startSpider")
 	@Produces("application/json")
 	public String startSpider(@FormParam("para") String para){
-		SpiderStarter.startSpider(true);
+		SpiderThread.startSpider(true);
 		return "1";
 	}
 	
@@ -35,7 +35,7 @@ public class CtrlService{
 	@Path("stopSpider")
 	@Produces("application/json")
 	public String stopSpider(@FormParam("para") String para){
-		SpiderStarter.startSpider(false);
+		SpiderThread.startSpider(false);
 		return "1";
 	}
 }

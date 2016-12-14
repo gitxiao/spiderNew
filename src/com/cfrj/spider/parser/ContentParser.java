@@ -1,4 +1,8 @@
 package com.cfrj.spider.parser;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,8 +11,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import cn.muke.ssh.domain.T_Keyword;
 import cn.muke.ssh.domain.T_News;
 
+import com.cfrj.spider.KeywordCtrl;
 import com.cfrj.spider.model.FetchedPage;
 import com.cfrj.spider.queue.UrlQueue;
 import com.cfrj.spider.queue.VisitedUrlQueue;
@@ -45,9 +51,15 @@ public class ContentParser {
 		parseUrls(fetchedPage);
 		
 		// 如果当前页面包含目标数据
-		if(containsTargetData(fetchedPage.getUrl(), doc)){
+		String ids = containsTargetData(fetchedPage.getUrl(), doc);
+		if(ids != null){
 			// 解析并获取目标数据并持久化
 			// TODO
+			fetchedPage.gettNews().setKeyword(ids);
+			Date date = getDate(doc.toString());
+			if(date != null){
+				fetchedPage.gettNews().setPubDate(date);
+			}
 			return fetchedPage.gettNews();
 		}else{
 			return null;
@@ -83,9 +95,45 @@ public class ContentParser {
 	}
 	
 	Random random = new Random();
-	private boolean containsTargetData(String url, Document contentDoc){
+	private List<T_Keyword> keywords;
+	private String containsTargetData(String url, Document contentDoc){
 		// 通过URL判断
 		// TODO
+		if(keywords == null){
+			keywords = KeywordCtrl.getKeywordsList();
+		}
+		
+		String contentString = contentDoc.toString();
+		String word = null;
+		T_Keyword keyword = null;
+		StringBuffer ids = null;
+		
+		
+		if(url.equals("http://lf.hebei.com.cn/yqx")){
+			//System.out.println("查找word = " + word + "," + contentString);
+		}
+		if(contentString != null){
+			int num = 0;
+			for (int i = 0; i < keywords.size(); i++) {
+				keyword = keywords.get(i);
+				word = keyword.getKeyword();
+				if(contentString.indexOf(word) >= 0){
+					num ++;				//关键字出现次数计数
+					if(ids == null){
+						ids = new StringBuffer();
+					}
+					ids.append(keyword.getKeyword() + ",");
+					System.out.println("找到关键字: " + keyword.getKeyword());
+				}
+			}
+		}
+		if(ids != null){
+			String temp = ids.toString();
+			System.out.println("关键字ids = " + temp);
+			return temp;
+		}else{
+			return null;
+		}
 		
 //		System.out.println(contentDoc.toString());
 		// 通过content判断，比如需要抓取class为grid_view中的内容
@@ -93,10 +141,8 @@ public class ContentParser {
 //			System.out.println(contentDoc.getElementsByClass("grid_view").toString());
 //			return true;
 //		}
-		
-		float ran = random.nextFloat();
-		return ran < 0.02;
 	}
+	
 	
 	
 	/**
@@ -175,9 +221,55 @@ public class ContentParser {
 	}
 	
 	/** 
+	 *  
+	 * @param s 
+	 * @return 获得网页发布时间
+	 */  
+	SimpleDateFormat sdf =   new SimpleDateFormat( "yy-MM-dd HH:mm" );
+	public Date getDate(final String s){  
+		
+//			String eL = "[0-9]{2}-[0-9]{2}-[0-9]{2}";
+//			Pattern p = Pattern.compile(eL);
+//			Matcher m = p.matcher(content);
+//			boolean dateFlag = m.matches();
+//			if (!dateFlag) {
+//				System.out.println("格式错误");
+//			}
+//			System.out.println("格式正确");
+//			return null;
+		String[] regexs = {
+			"\\d{4}年(0?[1-9]|[1][012])月(0?[1-9]|[12][0-9]|[3][01])日\\s([0-1]?[0-9]|2[0-3]):([0-5][0-9])",
+			"[0-9]{2}-[0-9]{2}-[0-9]{2}\\s([0-1]?[0-9]|2[0-3]):([0-5][0-9])",
+			"\\d{4}年(0?[1-9]|[1][012])月(0?[1-9]|[12][0-9]|[3][01])日",
+			"[0-9]{2}-[0-9]{2}-[0-9]{2}",
+		};
+		
+//		String regex = "[0-9]{2}-[0-9]{2}-[0-9]{2}";  
+		String dateStr = null;  
+		Date date = null;
+		Pattern pa = null;
+		Matcher ma = null;
+		for(int i = 0;i < regexs.length;i ++){
+			pa = Pattern.compile(regexs[i], Pattern.CANON_EQ);  
+			ma = pa.matcher(s);  
+			if (ma.find()){  
+				dateStr = ma.group();
+				System.out.println("找到发布日期: date = " + dateStr);
+				try {
+					date = sdf.parse(dateStr);
+					System.out.println("date.toString() = " + date.toString());
+					break;
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			} 
+		}
+		return date;  
+	}  
+	/** 
 	  *  
 	  * @param s 
-	  * @return 获得网页标题 
+	  * @return 获得网页标题
 	  */  
 	 public String getTitle(final String s){  
 		 String regex;  
