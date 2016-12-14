@@ -15,12 +15,12 @@
 	<script type="text/javascript" src="js/myUtils.js"></script>
 	<script type="text/javascript" src="js/myNames.js"></script>
 	<script>
-		var spiderServer = "http://192.168.33.56:8080/spiderNew/services/";
+		//var spiderServer = "http://192.168.33.56:8080/spiderNew/services/";
 		//var spiderServer = "http://localhost:8080/SSH_spider/services/";
 		
 		$(function(){
-			getMoreRecent();
-			//getData();		
+			//getMoreRecent();
+			getData();		
 		});
 		
 		
@@ -52,14 +52,14 @@
 		}
 		function getData(){
 			//从服务器获取材数据
-			$.post(spiderServer + "NewsService/findNews",{para:"我是参数"},fillData,"json");
+			$.post(opertionUrl + "NewsService/findNews",{para:"我是参数"},fillData,"json");
 		}
 		
 		function startSpider(){
-			$.post(spiderServer + "CtrlService/startSpider",{para:"我是参数"},fillData,"json");
+			$.post(opertionUrl + "CtrlService/startSpider",{para:"我是参数"},fillData,"json");
 		}
 		function stopSpider(){
-			$.post(spiderServer + "CtrlService/stopSpider",{para:"我是参数"},null,"json");
+			$.post(opertionUrl + "CtrlService/stopSpider",{para:"我是参数"},null,"json");
 		}
 		
 	</script>

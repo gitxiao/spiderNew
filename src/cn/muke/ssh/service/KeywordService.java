@@ -15,7 +15,7 @@ import cn.muke.ssh.domain.T_Keyword;
  *
  */
 @Stateless
-@Path("KeywordService")
+@Path("keyword")
 public class KeywordService{
 
 	public KeywordService(){

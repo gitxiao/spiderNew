@@ -1,5 +1,5 @@
 
-var opertionUrl = "http://192.168.33.56:8080/YXYS/services/"
+var opertionUrl = "http://localhost:8080/spiderNew/services/"
 	
 var DUTY_CZ = 0;		//厂长
 var DUTY_CJZR = 1;		//车间主任
