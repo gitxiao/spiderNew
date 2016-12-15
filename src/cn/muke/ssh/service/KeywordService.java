@@ -6,8 +6,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import com.google.gson.Gson;
+
 import cn.muke.ssh.dao.T_KeywordDao;
 import cn.muke.ssh.domain.T_Keyword;
+import cn.muke.ssh.domain.T_User;
 
 /**
  * 业务层
@@ -33,11 +36,17 @@ public class KeywordService{
 	@POST
 	@Path("save")
 	@Produces("application/json")
-	public void save(@FormParam("para") String para){
+	public String save(@FormParam("para") String para){
+		System.out.println("para = " + para);
 		try {
-			keywordDao.save(T_Keyword.class, para);
+			Gson gson = new Gson();
+			T_Keyword tk = gson.fromJson(para, T_Keyword.class);
+			tk.setState(1);
+			keywordDao.save(tk);
+			return "1";
 		} catch (Exception e) {
 			e.printStackTrace();
+			return "-1";
 		}
 	}
 	

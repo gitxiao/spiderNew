@@ -60,36 +60,23 @@
 					<tr>
 						<th field="keyword" width="60">关键字</th>
 						<th field="state" width="80" >状态</th>
-						<th field="remark" width="80" align="right">备注</th>
 					</tr>
 				</thead>
 			</table>
-			<div id="ygdlg" class="easyui-dialog" title="添加关键字" data-options="iconCls:'icon-save',closed:true,modal:true" style="width:500px;height:300px;padding:10px">
+			<div id=addkwdlg class="easyui-dialog" title="添加关键字" data-options="iconCls:'icon-save',closed:true,modal:true" style="width:400px;height:260px;padding:10px;top:100px;">
 				<form id="ygdlgForm" method="post">
-					<table class="tablecss" >
+					<table class="tablecss" align="center">
 						<tr>
-							<th colspan="6" align="center">新关键字</th>
+							<th colspan="12" align="center">新关键字</th>
 						</tr>
 						<tr>
-							<td>关键字:</td>
-							<td><input id="wname" class="easyui-textbox" type="text" name="name" data-options="required:true"></input></td>
+							<td colspan="3">关键字:</td>
+							<td colspan="9"><input id="name" class="easyui-textbox" type="text" name="name" data-options="required:true"></input></td>
 							
-							<td>状态:</td>
-							<td>
-								<select id="duty" class="easyui-combobox" name="状态" style="width:140px;" data-options="required:true">
-									<option value=1>在用</option>
-									<option value=2>停用</option>
-								</select>
-							</td>
 						</tr>
 						<tr>
-							<td>备注:</td>
-							<td colspan="3"><input id="remark" class="easyui-textbox" type="text" name="name" ></input></td>
-						</tr>
-						<tr>
-							<td colspan="6" align="center"> 
-								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="commitWorkerInfo()">提交</a>
-								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearWorkerInfo()">重置</a>
+							<td colspan="12" align="center"> 
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="addKeywordCommit()">提交</a>
 							</td>
 						</tr>
 						
@@ -99,26 +86,68 @@
 			
 		</div>
 		<script>
+				//---------------------------------关键字管理------------------------------------->>>
 				var toolbar = [{
 					text:'增加',
 					iconCls:'icon-add',
-					handler:function(){addWorker();}
+					handler:function(){addKeyword();}
 				},
-				{	text:'修改',
+				{	text:'启/停用',
 					iconCls:'icon-edit',
-					handler:function(){modifyWorker();}
-				},
-				{	text:'离职',
-					iconCls:'icon-man',
-					handler:function(){outDuty();}
+					handler:function(){modifyKeyword();}
 				}];
+				
+				//打开添加材料对话框
+				function addKeyword(){
+					$("#addkwdlg").dialog("open");
+				}
+				function addKeywordCommit(){
+					var name = $('#name').textbox('getValue');
+					//var remark = $('#remark').textbox('getValue');
+					//alert(name + ", " + remark);
+					if(!name){
+						$.messager.alert("提示","请输入关键字");
+					}else{
+						var data = "{\"keyword\":\"" + name+ 
+								   //"\",\"remark\":\"" + remark + 
+								   "\",\"state\":" + 1 + 
+								   "}";
+						$.post(opertionUrl + "keyword/save",{para:data},addResult,"text");
+					}
+				}
+				function addResult(sresult){
+					//alert("sresult,sresult == \"undefined\" = " + sresult + "," + (sresult == "undefined"));
+					if(sresult == "-1" || sresult == "undefined"){
+						$.messager.alert("提示","添加关键字失败 错误信息: " + sresult);
+					}else{
+						$.messager.alert("提示","添加关键字成功");
+						getKwData();
+						$("#addkwdlg").dialog("close");
+					}
+				}
+				function modifyKeyword(){
+				}
+				function modifyKeywordCommit(){
+				}
+				//---------------------------------关键字管理-------------------------------------<<<
+				
 		
 				function fillKeywordData(jsdata){
-					//printObject(jsdata,'jsdata',2);
+					printObject(jsdata,'jsdata',2);
 					//alert("jsdata = " + jsdata);
 					//var kwData = eval(jsdata); 
 					$("#kwdg").datagrid({loadFilter:pagerFilter,loadMsg:'数据正在加载,请耐心的等待...',striped:true})
-					$("#kwdg").datagrid('loadData', jsdata)
+					
+					var clrows = [];
+					for(var m = 0; m < jsdata.length; m++){						
+						console.log('jsdata[m].state == 1' + (jsdata[m].state == 1) + ',' + jsdata[m].state);
+						clrows.push({
+							id:jsdata[m].id,
+							keyword:jsdata[m].keyword,
+							state:jsdata[m].state == 1 ? '在用' : '停用'
+						});
+					}
+					$("#kwdg").datagrid('loadData', clrows)
 				}
 				
 				function getKwData(){
