@@ -55,19 +55,12 @@
 			$.post(opertionUrl + "NewsService/findNews",{para:"我是参数"},fillData,"json");
 		}
 		
-		function startSpider(){
-			$.post(opertionUrl + "CtrlService/startSpider",{para:"我是参数"},fillData,"json");
-		}
-		function stopSpider(){
-			$.post(opertionUrl + "CtrlService/stopSpider",{para:"我是参数"},null,"json");
-		}
-		
 	</script>
 </head>
 <body>
 	<div class="easyui-tabs" style="width:auto;height:auto;">
 		
-		<div title="结果展示" style="padding:10px;">
+		<div title="爬取结果" style="padding:10px;">
 			<table id="kcdg" style="width:780px;height:350px" data-options="
 						rownumbers:true,
 						singleSelect:true,
@@ -84,64 +77,6 @@
 					</tr>
 				</thead>
 			</table>
-		</div>
-		
-		<div title="自定义爬虫" style="padding:10px;">
-			<div style="padding:10px 60px 20px 60px">
-				<form id="keyword" method="post">
-					<table class="tablecss" style="width:800px;">
-						<tr>
-							<th colspan="6" align="center">自定义关键字</th>
-						</tr>
-						<tr>
-							<td>自定义关键字:</td>
-							<td><input id="enterCount" class="easyui-numberbox" type="text" /></td>
-						</tr>
-						<tr>
-							<td colspan="4" align="center">
-								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitMIForm()">提交</a>
-							</td>
-						</tr>
-					</table>
-				</form>
-				<br />
-				<form id="website" method="post">
-					<table class="tablecss" style="width:800px;">
-						<tr>
-							<th colspan="6" align="center">自定义网址</th>
-						</tr>
-						<tr>
-							<td>自定义网址:</td>
-							<td><input id="enterCount" class="easyui-numberbox" type="text" /></td>
-						</tr>
-						<tr>
-							<td colspan="4" align="center">
-								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitMIForm()">提交</a>
-							</td>
-						</tr>
-					</table>
-				</form>
-			</div>
-		</div>
-		
-		<div title="启动和结束" style="padding:10px;">
-			<div style="padding:10px 60px 20px 60px">
-				<form id="miff" method="post">
-					<table class="tablecss" style="width:800px;">
-						<tr>
-							<th colspan="6" align="center">爬虫开关</th>
-						</tr>
-						<tr>
-							<td colspan="4" align="center">
-								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="startSpider()">启动</a>
-							</td>
-							<td colspan="4" align="center">
-								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="stopSpider()">结束</a>
-							</td>
-						</tr>
-					</table>
-				</form>
-			</div>
 		</div>
 		
 	</div>
