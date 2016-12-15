@@ -10,7 +10,6 @@ import com.google.gson.Gson;
 
 import cn.muke.ssh.dao.T_KeywordDao;
 import cn.muke.ssh.domain.T_Keyword;
-import cn.muke.ssh.domain.T_User;
 
 /**
  * 业务层
@@ -53,6 +52,23 @@ public class KeywordService{
 	/**
 	 * service中的保存方法
 	 */
+	@POST
+	@Path("changeState")
+	@Produces("application/json")
+	public String changeState(@FormParam("para") String para){
+		System.out.println("para = " + para);
+		try {
+			keywordDao.save(T_Keyword.class,para);
+			return "1";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "-1";
+		}
+	}
+	
+	/**
+	 * service中的保存方法
+	 */
 	public void save(T_Keyword word){
 		try {
 			keywordDao.save(word);
@@ -70,8 +86,23 @@ public class KeywordService{
 	public Object findAll(){
 		System.out.println("KeywordService findAll");
 		try {
-			//直接从网页调用时,没能经过spring创建对象,t_NewsDao为空,所以使用前要先初始化
 			return keywordDao.findAll(T_Keyword.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "-1";
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	@POST
+	@Path("findByState")
+	@Produces("application/json")
+	public Object findByState(@FormParam("para") String state){
+		System.out.println("KeywordService findByState");
+		try {
+			return keywordDao.findByState(Integer.parseInt(state));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "-1";

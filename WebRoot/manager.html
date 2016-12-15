@@ -46,8 +46,8 @@
 			<div class="easyui-panel" style="padding:5px;width:780px;">
 				<span style="padding:3px 5px 3px 10px;">关键字状态：</span>
 				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',selected:true" style="margin:3px 5px 3px 10px;" onclick="getYGData()">全部</a>
-				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1'" style="margin:3px 5px 3px 10px;" onclick="showWorkerByState('0')">在用</a>
-				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1'" style="margin:3px 5px 3px 10px;" onclick="showWorkerByState('1')">停用</a>
+				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1'" style="margin:3px 5px 3px 10px;" onclick="getKeywordByState('1')">在用</a>
+				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1'" style="margin:3px 5px 3px 10px;" onclick="getKeywordByState('0')">停用</a>
 			</div>
 			<table id="kwdg" style="width:780px;height:350px" data-options="
 						rownumbers:true,
@@ -59,7 +59,7 @@
 				<thead>
 					<tr>
 						<th field="keyword" width="60">关键字</th>
-						<th field="state" width="80" >状态</th>
+						<th field="stateName" width="80" >状态</th>
 					</tr>
 				</thead>
 			</table>
@@ -126,14 +126,38 @@
 					}
 				}
 				function modifyKeyword(){
+					//打开修改对话框
+					
+					var mrow = $("#kwdg").datagrid("getSelected");
+					if(mrow){
+						$.messager.confirm("操作提示", "您确定修改关键字状态吗？", function (data) {  
+							if (data) { 
+								mrow.state = mrow.state ^ 1;
+								$.post(opertionUrl+"keyword/changeState",{para:JSON.stringify(mrow)},changeResult,"text");
+							}  
+						});
+					}else{
+						$.messager.alert("操作提示","请选择要修改的关键字");
+					}
 				}
-				function modifyKeywordCommit(){
+				function changeResult(sresult){
+					if(sresult == "-1"){
+						$.messager.alert("提示","修改失败");
+					}else{
+						//getCLData();		//刷新材料数据
+						$.messager.alert("提示","修改成功");
+						
+						var row = $("#kwdg").datagrid("getSelected");
+			            var index = $('#kwdg').datagrid('getRowIndex', row);
+			            row.stateName = row.state == 1 ? '在用' : '停用'
+			            $('#kwdg').datagrid('refreshRow', index);
+					}
 				}
 				//---------------------------------关键字管理-------------------------------------<<<
 				
 		
 				function fillKeywordData(jsdata){
-					printObject(jsdata,'jsdata',2);
+					//printObject(jsdata,'jsdata',2);
 					//alert("jsdata = " + jsdata);
 					//var kwData = eval(jsdata); 
 					$("#kwdg").datagrid({loadFilter:pagerFilter,loadMsg:'数据正在加载,请耐心的等待...',striped:true})
@@ -143,15 +167,19 @@
 						console.log('jsdata[m].state == 1' + (jsdata[m].state == 1) + ',' + jsdata[m].state);
 						clrows.push({
 							id:jsdata[m].id,
+							state:jsdata[m].state,
 							keyword:jsdata[m].keyword,
-							state:jsdata[m].state == 1 ? '在用' : '停用'
+							stateName:jsdata[m].state == 1 ? '在用' : '停用'
 						});
 					}
 					$("#kwdg").datagrid('loadData', clrows)
 				}
 				
-				function getKwData(){
+				function getKeywordAll(){
 					$.post(opertionUrl+"keyword/findAll",fillKeywordData,"json");
+				}
+				function getKeywordByState(state){
+					$.post(opertionUrl+"keyword/findByState",{para:state},fillKeywordData,"json");
 				}
 				
 				//装载爬取数据
@@ -166,7 +194,7 @@
 				
 				$(function(){
 					//getData();
-					getKwData();			//获取关键字
+					getKeywordAll();			//获取关键字
 				});
 
 			</script>
