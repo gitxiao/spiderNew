@@ -22,5 +22,8 @@
         <property name="depth" type="java.lang.Integer">
             <column name="depth" />
         </property>
+        <property name="state" type="java.lang.Integer">
+            <column name="state" />
+        </property>
     </class>
 </hibernate-mapping>

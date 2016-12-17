@@ -23,31 +23,10 @@
 <body>
 	<div class="easyui-tabs" style="width:auto;height:auto;">
 		
-		
-		<div title="启动和结束" style="padding:10px;">
-			<div style="padding:10px 60px 20px 60px">
-				<form id="miff" method="post">
-					<table class="tablecss" style="width:800px;">
-						<tr>
-							<th colspan="6" align="center">爬虫开关</th>
-						</tr>
-						<tr>
-							<td colspan="4" align="center">
-								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="startSpider()">启动</a>
-							</td>
-							<td colspan="4" align="center">
-								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="stopSpider()">结束</a>
-							</td>
-						</tr>
-					</table>
-				</form>
-			</div>
-		</div>
-		
 		<div title="关键字管理" style="padding:10px;">
 			<div class="easyui-panel" style="padding:5px;width:780px;">
 				<span style="padding:3px 5px 3px 10px;">关键字状态：</span>
-				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',selected:true" style="margin:3px 5px 3px 10px;" onclick="getYGData()">全部</a>
+				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',selected:true" style="margin:3px 5px 3px 10px;" onclick="getKwData()">全部</a>
 				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1'" style="margin:3px 5px 3px 10px;" onclick="getKeywordByState('1')">在用</a>
 				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1'" style="margin:3px 5px 3px 10px;" onclick="getKeywordByState('0')">停用</a>
 			</div>
@@ -85,8 +64,96 @@
 					</table>
 				</form>
 			</div>
+		</div>
+		
+		<div title="目标页管理" style="padding:10px;">
+			<div class="easyui-panel" style="padding:5px;width:780px;">
+				<span style="padding:3px 5px 3px 10px;">目标页状态：</span>
+				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',selected:true" style="margin:3px 5px 3px 10px;" onclick="getWsData()">全部</a>
+				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1'" style="margin:3px 5px 3px 10px;" onclick="getWebsiteByState('1')">在用</a>
+				<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1'" style="margin:3px 5px 3px 10px;" onclick="getWebsiteByState('0')">停用</a>
+			</div>
+			<table id="wsdg" style="width:780px;height:350px" data-options="
+						rownumbers:true,
+						singleSelect:true,
+						autoRowHeight:false,
+						pagination:true,
+						pageSize:10,
+						toolbar:toolbarWs">
+				<thead>
+					<tr>
+						<th field="name" width="150" >名称</th>
+						<th field="url" width="500">地址</th>
+						<th field="depth" width="30">深度</th>
+						<th field="stateName" width="30">状态</th>
+					</tr>
+				</thead>
+			</table>
+			<div id=addwsblg class="easyui-dialog" title="添加目标页" data-options="iconCls:'icon-save',closed:true,modal:true" style="width:400px;height:260px;padding:10px;top:100px;">
+				<form id="wsdlgForm" method="post">
+					<table class="tablecss" align="center">
+						<tr>
+							<th colspan="12" align="center">新目标页</th>
+						</tr>
+						<tr>
+							<td colspan="3">名称:</td>
+							<td colspan="9"><input id="wsname" class="easyui-textbox" type="text" name="name" data-options="required:true"></input></td>
+						</tr>
+						<tr>
+							<td colspan="3">地址:</td>
+							<td colspan="9"><input id="wsurl" class="easyui-textbox" type="text" name="name" data-options="required:true"></input></td>
+						</tr>
+						
+						<tr class="calendar-menu-month">
+							<td colspan="3">深度:</td>
+							<td colspan="9">
+								<select id="wsdepth" class="easyui-combobox" name="爬取深度" style="width:140px;" 
+										data-options="
+											required:true,
+											editable:false,
+											valueField:'userType',
+											textField:'typeName' ">
+											
+									<option value=1>1层</option>
+									<option value=2>2层</option>
+									<option value=3>3层</option>
+								</select>
+							</td>
+						</tr>
+						
+						<tr>
+							<td colspan="12" align="center"> 
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="addWebsiteCommit()">提交</a>
+							</td>
+						</tr>
+						
+					</table>
+				</form>
+			</div>
 			
 		</div>
+		
+		<div title="启动和结束" style="padding:10px;">
+			<div style="padding:10px 60px 20px 60px">
+				<form id="miff" method="post">
+					<table class="tablecss" style="width:800px;">
+						<tr>
+							<th colspan="6" align="center">爬虫开关</th>
+						</tr>
+						<tr>
+							<td colspan="4" align="center">
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="startSpider()">启动</a>
+							</td>
+							<td colspan="4" align="center">
+								<a href="javascript:void(0)" class="easyui-linkbutton" onclick="stopSpider()">结束</a>
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div>
+		</div>
+		
+		
 		<script>
 				//---------------------------------关键字管理------------------------------------->>>
 				var toolbar = [{
@@ -99,7 +166,6 @@
 					handler:function(){modifyKeyword();}
 				}];
 				
-				//打开添加材料对话框
 				function addKeyword(){
 					$("#addkwdlg").dialog("open");
 				}
@@ -146,7 +212,6 @@
 					if(sresult == "-1"){
 						$.messager.alert("提示","修改失败");
 					}else{
-						//getCLData();		//刷新材料数据
 						$.messager.alert("提示","修改成功");
 						
 						var row = $("#kwdg").datagrid("getSelected");
@@ -158,12 +223,91 @@
 				//---------------------------------关键字管理-------------------------------------<<<
 				
 		
+				//---------------------------------目标页管理------------------------------------->>>
+				var toolbarWs = [{
+					text:'增加',
+					iconCls:'icon-add',
+					handler:function(){addWebsite();}
+				},
+				{	text:'启/停用',
+					iconCls:'icon-edit',
+					handler:function(){modifyWebsite();}
+				}];
+				
+				function addWebsite(){
+					$("#addwsblg").dialog("open");
+				}
+				function addWebsiteCommit(){
+					var name = $('#wsname').textbox('getValue');
+					var url = $('#wsurl').textbox('getValue');
+					var depth = $('#wsdepth').combobox('getValue');
+					//alert('name,url,depth = ' + name + ',' + url + ',' + depth);
+					if(!name || ! url){
+						$.messager.alert("提示","请输入完整信息");
+					}else{
+						var data = "{\"name\":\"" + name+ 
+								   "\",\"url\":\"" + url + 
+								   "\",\"depth\":" + depth + 
+								   "}";
+						$.post(opertionUrl + "WebsiteService/save",{para:data},addResultWs,"text");
+					}
+				}
+				function addResultWs(sresult){
+					//alert("sresult,sresult == \"undefined\" = " + sresult + "," + (sresult == "undefined"));
+					if(sresult == "-1" || sresult == "undefined"){
+						$.messager.alert("提示","添加目标页失败 错误信息: " + sresult);
+					}else{
+						$.messager.alert("提示","添加目标页成功");
+						getWsData();
+						$("#addwsblg").dialog("close");
+					}
+				}
+				function modifyWebsite(){
+					//打开修改对话框
+					
+					var mrow = $("#wsdg").datagrid("getSelected");
+					if(mrow){
+						$.messager.confirm("操作提示", "您确定修改目标页状态吗？", function (data) {  
+							if (data) { 
+								mrow.state = mrow.state ^ 1;
+								$.post(opertionUrl+"WebsiteService/changeState",{para:JSON.stringify(mrow)},changeResultWs,"text");
+							}  
+						});
+					}else{
+						$.messager.alert("操作提示","请选择要修改的目标页");
+					}
+				}
+				function changeResultWs(sresult){
+					if(sresult == "-1"){
+						$.messager.alert("提示","修改失败");
+					}else{
+						$.messager.alert("提示","修改成功");
+						
+						var row = $("#wsdg").datagrid("getSelected");
+			            var index = $('#wsdg').datagrid('getRowIndex', row);
+			            row.stateName = row.state == 1 ? '在用' : '停用'
+			            $('#wsdg').datagrid('refreshRow', index);
+					}
+				}
+				//---------------------------------目标页管理-------------------------------------<<<
+
+				
+				//---------------------------------启动和停止------------------------------------->>>
+				function startSpider(){
+					$.post(opertionUrl + "CtrlService/startSpider",{para:"我是参数"},fillData,"json");
+				}
+				function stopSpider(){
+					$.post(opertionUrl + "CtrlService/stopSpider",{para:"我是参数"},null,"json");
+				}
+				//---------------------------------启动和停止-------------------------------------<<<
+		
+				
 				//---------------------------------加载数据------------------------------------->>>
 				function fillKeywordData(jsdata){
 					//printObject(jsdata,'jsdata',2);
 					//alert("jsdata = " + jsdata);
 					//var kwData = eval(jsdata); 
-					$("#kwdg").datagrid({loadFilter:pagerFilter,loadMsg:'数据正在加载,请耐心的等待...',striped:true})
+					
 					
 					var clrows = [];
 					for(var m = 0; m < jsdata.length; m++){						
@@ -178,36 +322,47 @@
 					$("#kwdg").datagrid('loadData', clrows)
 				}
 				
-				function getKeywordAll(){
-					$.post(opertionUrl+"keyword/findAll",fillKeywordData,"json");
-				}
 				function getKeywordByState(state){
 					$.post(opertionUrl+"keyword/findByState",{para:state},fillKeywordData,"json");
 				}
-				
-				//装载爬取数据
-				function fillData(data){
-					$("#kcdg").datagrid({loadFilter:pagerFilter,loadMsg:'数据正在加载,请耐心的等待...',striped:true}).datagrid('loadData', data)
+				function getWebsiteByState(state){
+					$.post(opertionUrl+"WebsiteService/findByState",{para:state},fillWsData,"json");
 				}
-				function getData(){
-					//从服务器获取材数据
-					$.post(opertionUrl + "NewsService/findNews",{para:"我是参数"},fillData,"json");
+				
+				function fillWsData(jsdata){
+					var clrows = [];
+					for(var m = 0; m < jsdata.length; m++){						
+						console.log('jsdata[m].state == 1' + (jsdata[m].state == 1) + ',' + jsdata[m].state);
+						clrows.push({
+							id:jsdata[m].id,
+							name:jsdata[m].name,
+							url:jsdata[m].url,
+							depth:jsdata[m].depth,
+							state:jsdata[m].state,
+							stateName:jsdata[m].state == 1 ? '在用' : '停用'
+						});
+					}
+					$("#wsdg").datagrid('loadData', clrows);
+				}
+				
+				function getKwData(){
+					$("#kwdg").datagrid({loadFilter:pagerFilter,loadMsg:'数据正在加载,请耐心的等待...',striped:true})
+					$.post(opertionUrl+"keyword/findAll",null,fillKeywordData,"json");
+				}
+				
+				function getWsData(){
+					$("#wsdg").datagrid({loadFilter:pagerFilter,loadMsg:'数据正在加载,请耐心的等待...',striped:true})
+					$.post(opertionUrl + "WebsiteService/findAll",null,fillWsData,"json");
 				}
 				
 				
 				$(function(){
-					//getData();
-					getKeywordAll();			//获取关键字
+					getKwData();
+					getWsData();
 				});
 				//---------------------------------加载数据-------------------------------------<<<
 
 				
-				function startSpider(){
-					$.post(opertionUrl + "CtrlService/startSpider",{para:"我是参数"},fillData,"json");
-				}
-				function stopSpider(){
-					$.post(opertionUrl + "CtrlService/stopSpider",{para:"我是参数"},null,"json");
-				}
 			</script>
 	</div>
 </body>

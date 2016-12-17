@@ -5,6 +5,7 @@ public class T_Website {
 	
 	private Integer id;
 	private Integer depth;
+	private Integer state;
 	private String url;
 	private String name;
 	private String keywordIds;
@@ -37,6 +38,12 @@ public class T_Website {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public Integer getState() {
+		return state;
+	}
+	public void setState(Integer state) {
+		this.state = state;
 	}
 	
 }

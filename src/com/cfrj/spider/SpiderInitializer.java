@@ -1,8 +1,11 @@
 package com.cfrj.spider;
 
+import java.util.Iterator;
 import java.util.List;
 
+import cn.muke.ssh.domain.T_Website;
 import cn.muke.ssh.service.KeywordService;
+import cn.muke.ssh.service.WebsiteService;
 
 import com.cfrj.spider.model.SpiderParams;
 import com.cfrj.spider.queue.UrlQueue;
@@ -41,12 +44,25 @@ public class SpiderInitializer {
 	 * 准备初始的爬取链接
 	 * 896836015
 	 */
+	@SuppressWarnings("unchecked")
 	public static void initializeQueue(){
 		
-		UrlQueue.addElement("http://lf.hebei.com.cn/yqx/",0);
+//		UrlQueue.addElement("http://lf.hebei.com.cn/yqx/",0);
 //		UrlQueue.addElement("http://jizhou.hebei.com.cn",0);
 //		UrlQueue.addElement("http://www.hengshui.gov.cn",0);
 		
+		WebsiteService service = new WebsiteService();
+		List<T_Website> list = (List<T_Website>)service.findAll();
+		if(list == null){
+			return;
+		}
+		int size = list.size();
+		T_Website tw = null;
+		for (int i = 0; i < size; i++) {
+			tw = list.get(i);
+			System.out.println("添加网址: " + tw.getName() + "," + tw.getUrl());
+			UrlQueue.addElement(tw.getUrl(),0);
+		}
 	}
 	
 	/**

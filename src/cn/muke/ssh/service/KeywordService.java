@@ -52,23 +52,6 @@ public class KeywordService{
 	/**
 	 * service中的保存方法
 	 */
-	@POST
-	@Path("changeState")
-	@Produces("application/json")
-	public String changeState(@FormParam("para") String para){
-		System.out.println("para = " + para);
-		try {
-			keywordDao.save(T_Keyword.class,para);
-			return "1";
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "-1";
-		}
-	}
-	
-	/**
-	 * service中的保存方法
-	 */
 	public void save(T_Keyword word){
 		try {
 			keywordDao.save(word);
@@ -92,6 +75,24 @@ public class KeywordService{
 			return "-1";
 		}
 	}
+	
+	/**
+	 * service中的保存方法
+	 */
+	@POST
+	@Path("changeState")
+	@Produces("application/json")
+	public String changeState(@FormParam("para") String para){
+		System.out.println("para = " + para);
+		try {
+			keywordDao.save(T_Keyword.class,para);
+			return "1";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "-1";
+		}
+	}
+	
 	
 	/**
 	 * 
