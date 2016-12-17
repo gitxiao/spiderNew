@@ -82,13 +82,14 @@ public class SpiderThread implements Runnable{
 				SpiderInitializer.initializeParams();
 				
 				// 初始化爬取队列
-				SpiderInitializer.initializeQueue();
-				
+				int size1 = SpiderInitializer.initializeQueue();
 				// 初始化关键字
-				SpiderInitializer.initializeKeyword();
+				int size2 = SpiderInitializer.initializeKeyword();
 				
-				spider = new Thread(st);
-				new Thread(st).start();
+				if(size1 >= 1 && size2 >= 1){
+					spider = new Thread(st);
+					new Thread(st).start();
+				}
 			}
 		}else{
 			System.out.println("爬虫停止运行=================================================================================================================");

@@ -11,11 +11,12 @@ public class T_News {
 	private String keyword;
 	private String keywordNum;
 	private Integer depth;
+	private Integer maxDepth;
 	
 	public T_News(){
 		
 	}
-	public T_News(String url,Integer depth){
+	public T_News(String url,Integer depth,Integer maxDepth){
 		
 		if(url != null){
 			int length = url.length();
@@ -26,6 +27,7 @@ public class T_News {
 		
 		this.url = url;
 		this.depth = depth;
+		this.maxDepth = maxDepth;
 	}
 //	public T_News(String url, String title, Date pubDate, String keyword,Integer depth) {
 //		super();
@@ -76,6 +78,12 @@ public class T_News {
 	}
 	public void setDepth(Integer depth) {
 		this.depth = depth;
+	}
+	public Integer getMaxDepth() {
+		return maxDepth;
+	}
+	public void setMaxDepth(Integer maxDepth) {
+		this.maxDepth = maxDepth;
 	}
 	
 	

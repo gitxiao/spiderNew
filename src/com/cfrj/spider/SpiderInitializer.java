@@ -19,7 +19,7 @@ public class SpiderInitializer {
 	public static void initializeParams(){
 		SpiderParams.WORKER_NUM = 20;
 		SpiderParams.DEYLAY_TIME = 2000;
-		SpiderParams.MAX_DEPTH = 1;
+//		SpiderParams.MAX_DEPTH = 1;
 //		InputStream in = null;
 //		try {
 //			in = new BufferedInputStream(new FileInputStream("conf/spider.properties"));
@@ -45,24 +45,25 @@ public class SpiderInitializer {
 	 * 896836015
 	 */
 	@SuppressWarnings("unchecked")
-	public static void initializeQueue(){
+	public static int initializeQueue(){
 		
 //		UrlQueue.addElement("http://lf.hebei.com.cn/yqx/",0);
 //		UrlQueue.addElement("http://jizhou.hebei.com.cn",0);
 //		UrlQueue.addElement("http://www.hengshui.gov.cn",0);
 		
 		WebsiteService service = new WebsiteService();
-		List<T_Website> list = (List<T_Website>)service.findAll();
+		List<T_Website> list = (List<T_Website>)service.findByState("1");
 		if(list == null){
-			return;
+			return -1;
 		}
 		int size = list.size();
 		T_Website tw = null;
 		for (int i = 0; i < size; i++) {
 			tw = list.get(i);
 			System.out.println("添加网址: " + tw.getName() + "," + tw.getUrl());
-			UrlQueue.addElement(tw.getUrl(),0);
+			UrlQueue.addElement(tw.getUrl(),0,tw.getDepth());
 		}
+		return size;
 	}
 	
 	/**
@@ -70,11 +71,12 @@ public class SpiderInitializer {
 	 * 896836015
 	 */
 	@SuppressWarnings("unchecked")
-	public static void initializeKeyword(){
+	public static int initializeKeyword(){
 		
 		KeywordService service = new KeywordService();
-		List list = (List)service.findAll();
+		List list = (List)service.findByState("1");
 		System.out.println("拿到关键字列表");
 		KeywordCtrl.setKeywordsList(list);
+		return list.size();
 	}
 }

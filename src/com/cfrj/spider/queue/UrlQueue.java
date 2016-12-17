@@ -16,10 +16,10 @@ public class UrlQueue {
 	 * LinkedList 不是线程安全的, 所以要加同步锁
 	 * @param url
 	 */
-	public synchronized static void addElement(String url,int depth){
-		if(!isContains(url) && depth <= SpiderParams.MAX_DEPTH){
+	public synchronized static void addElement(String url,int depth,int maxDepth){
+		if(!isContains(url) && depth <= maxDepth){
 			urlQueue.add(url);
-			newsMap.put(url, new T_News(url,depth));
+			newsMap.put(url, new T_News(url,depth,maxDepth));
 //			System.out.println("UrlQueue addElement 待爬取url: " + url);
 //			System.out.println("addElement 添加后");
 //			traversal();

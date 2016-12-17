@@ -88,8 +88,8 @@ public class ContentParser {
 //				System.out.println("fetchedPage.gettNews().getUrl() = " + fetchedPage.gettNews().getUrl());
 //				System.out.println("fetchedPage.getContent() = " + fetchedPage.getContent());
 //			}
-			if(newUrl != null){								
-				UrlQueue.addElement(newUrl,fetchedPage.gettNews().getDepth() + 1);
+			if(newUrl != null){						
+				UrlQueue.addElement(newUrl,fetchedPage.gettNews().getDepth() + 1,fetchedPage.gettNews().getMaxDepth());
 			}
 		}
 	}
